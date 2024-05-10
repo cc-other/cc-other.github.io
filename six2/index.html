@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>平特统计</title>
+  <style>
+    /* 样式可根据需要自行调整 */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+      overflow-x: auto; /* 横向滚动条 */
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+      white-space: nowrap; /* 防止换行 */
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>平特统计</h2>
+    <label for="periods">统计期数:</label>
+    <input type="number" id="periods" name="periods" min="1" max="100">
+    <button onclick="countZodiac()">统计</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function countZodiac() {
+      var periods = document.getElementById("periods").value;
+      // 检查输入是否有效
+      if (periods <= 0) {
+        alert("请输入有效的期数！");
+        return;
+      }
+      // 从URL读取JSON内容
+      fetch('https://api.macaumarksix.com/history/macaujc2/y/2024')
+        .then(response => response.json())
+        .then(data => {
+          // 统计最近n期中所有zodiac属性的出现次数
+          var zodiacCounts = {};
+          for (var i = 0; i < periods && i < data.data.length; i++) {
+            var zodiacList = data.data[i].zodiac.split(',');
+            // 使用 Set 对象过滤重复内容
+            var uniqueZodiacList = new Set(zodiacList);
+            uniqueZodiacList.forEach(function(zodiac) {
+              if (zodiacCounts[zodiac]) {
+                zodiacCounts[zodiac]++;
+              } else {
+                zodiacCounts[zodiac] = 1;
+              }
+            });
+          }
+          // 构造统计结果的表格内容
+          var tableStr = "<h3>近 " + periods + " 期 - 开奖统计：</h3>";
+          tableStr += "<table>";
+          tableStr += "<tr><th>生肖</th>";
+          for (var zodiac in zodiacCounts) {
+            tableStr += "<td>" + zodiac + "</td>";
+          }
+          tableStr += "</tr>";
+          tableStr += "<tr><th>次数</th>";
+          for (var zodiac in zodiacCounts) {
+            tableStr += "<td>" + zodiacCounts[zodiac] + "</td>";
+          }
+          tableStr += "</tr>";
+          tableStr += "</table>";
+          // 显示结果在网页上
+          var resultDiv = document.getElementById("result");
+          resultDiv.innerHTML = tableStr;
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    }
+  </script>
+</body>
+</html>
