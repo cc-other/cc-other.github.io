@@ -3,46 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>连肖生成器</title>
+<title>连肖组合器</title>
 <style>
   body {
     font-family: Arial, sans-serif;
     text-align: center;
   }
   label {
-    display: inline-block;
+    display: block;
     margin-bottom: 10px;
+  }
+  .checkbox-group {
+    margin-bottom: 20px;
+  }
+  .checkbox-group input[type="checkbox"] {
+    display: none;
+  }
+  .checkbox-group label {
+    display: inline-block;
+    margin-right: 10px;
+    background-color: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .checkbox-group label:hover {
+    background-color: #ddd;
+  }
+  .checkbox-group input[type="checkbox"]:checked + label {
+    background-color: #007bff;
+    color: white;
   }
 </style>
 </head>
 <body>
-  <h1>连肖生成器</h1>
-  <label>排除</label>
-  <input type="checkbox" id="excludeRat" value="鼠">
-  <label for="excludeRat">鼠</label>
-  <input type="checkbox" id="excludeOx" value="牛">
-  <label for="excludeOx">牛</label>
-  <input type="checkbox" id="excludeTiger" value="虎">
-  <label for="excludeTiger">虎</label>
-  <input type="checkbox" id="excludeRabbit" value="兔">
-  <label for="excludeRabbit">兔</label>
-  <input type="checkbox" id="excludeDragon" value="龙">
-  <label for="excludeDragon">龙</label>
-  <input type="checkbox" id="excludeSnake" value="蛇">
-  <label for="excludeSnake">蛇</label>
-  <input type="checkbox" id="excludeHorse" value="马">
-  <label for="excludeHorse">马</label>
-  <input type="checkbox" id="excludeGoat" value="羊">
-  <label for="excludeGoat">羊</label>
-  <input type="checkbox" id="excludeMonkey" value="猴">
-  <label for="excludeMonkey">猴</label>
-  <input type="checkbox" id="excludeRooster" value="鸡">
-  <label for="excludeRooster">鸡</label>
-  <input type="checkbox" id="excludeDog" value="狗">
-  <label for="excludeDog">狗</label>
-  <input type="checkbox" id="excludePig" value="猪">
-  <label for="excludePig">猪</label>
-  <br><br>
+  <h1>连肖组合</h1>
+  <div class="checkbox-group">
+    <label for="excludeRat"><input type="checkbox" id="excludeRat" value="鼠" onchange="updateColor(this)"> 鼠</label>
+    <label for="excludeOx"><input type="checkbox" id="excludeOx" value="牛" onchange="updateColor(this)"> 牛</label>
+    <label for="excludeTiger"><input type="checkbox" id="excludeTiger" value="虎" onchange="updateColor(this)"> 虎</label>
+    <label for="excludeRabbit"><input type="checkbox" id="excludeRabbit" value="兔" onchange="updateColor(this)"> 兔</label>
+    <label for="excludeDragon"><input type="checkbox" id="excludeDragon" value="龙" onchange="updateColor(this)"> 龙</label>
+    <label for="excludeSnake"><input type="checkbox" id="excludeSnake" value="蛇" onchange="updateColor(this)"> 蛇</label>
+	<br>
+    <label for="excludeHorse"><input type="checkbox" id="excludeHorse" value="马" onchange="updateColor(this)"> 马</label>
+    <label for="excludeGoat"><input type="checkbox" id="excludeGoat" value="羊" onchange="updateColor(this)"> 羊</label>
+    <label for="excludeMonkey"><input type="checkbox" id="excludeMonkey" value="猴" onchange="updateColor(this)"> 猴</label>
+    <label for="excludeRooster"><input type="checkbox" id="excludeRooster" value="鸡" onchange="updateColor(this)"> 鸡</label>
+    <label for="excludeDog"><input type="checkbox" id="excludeDog" value="狗" onchange="updateColor(this)"> 狗</label>
+    <label for="excludePig"><input type="checkbox" id="excludePig" value="猪" onchange="updateColor(this)"> 猪</label>
+  </div>
   <label>生肖数量:</label>
   <select id="animalCount">
     <option value="3">3</option>
@@ -57,9 +67,19 @@
   <br><br>
   <div id="output"></div>
   <br><br>
-  <button onclick="copyToClipboard()">复制到剪贴板</button>
+  <button onclick="copyToClipboard()">复制结果</button>
 
   <script>
+    function updateColor(checkbox) {
+      if (checkbox.checked) {
+        checkbox.parentNode.style.backgroundColor = '#007bff';
+        checkbox.parentNode.style.color = 'white';
+      } else {
+        checkbox.parentNode.style.backgroundColor = '#f0f0f0';
+        checkbox.parentNode.style.color = 'black';
+      }
+    }
+
     function generateCombination() {
       var animals = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
       var excludedAnimals = [];
