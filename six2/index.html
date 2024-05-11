@@ -57,7 +57,7 @@
   <div class="container">
     <h2>平特统计</h2>
     <label for="periods">统计期数:</label>
-    <input type="number" id="periods" name="periods" min="1" max="100">
+    <input type="number" id="periods" name="periods" min="1" max="100" value="10">
     <button onclick="countZodiac()">统计</button>
     <div id="result"></div>
   </div>
@@ -74,35 +74,47 @@
       fetch('https://api.macaumarksix.com/history/macaujc2/y/2024')
         .then(response => response.json())
         .then(data => {
-          // 统计最近n期中所有zodiac属性的出现次数
+          // 初始化生肖出现次数和最大连续出现次数
           var zodiacCounts = {};
+          var maxCounts = {};
+          var currentCounts = {};
+          
+          // 初始化生肖列表
+          var zodiacs = ["鼠", "牛", "虎", "兔", "龍", "蛇", "馬", "羊", "猴", "雞", "狗", "豬"];
+          zodiacs.forEach(function(zodiac) {
+            zodiacCounts[zodiac] = 0;
+            maxCounts[zodiac] = 0;
+            currentCounts[zodiac] = 0;
+          });
+          
+          // 统计最近n期中所有zodiac属性的出现次数和最大连续出现次数
           for (var i = 0; i < periods && i < data.data.length; i++) {
             var zodiacList = data.data[i].zodiac.split(',');
-            // 使用 Set 对象过滤重复内容
-            var uniqueZodiacList = new Set(zodiacList);
-            uniqueZodiacList.forEach(function(zodiac) {
-              if (zodiacCounts[zodiac]) {
+            zodiacs.forEach(function(zodiac) {
+              if (zodiacList.includes(zodiac)) {
                 zodiacCounts[zodiac]++;
+                currentCounts[zodiac]++;
+                maxCounts[zodiac] = Math.max(maxCounts[zodiac], currentCounts[zodiac]);
               } else {
-                zodiacCounts[zodiac] = 1;
+                currentCounts[zodiac] = 0;
               }
             });
           }
+          
           // 构造统计结果的表格内容
           var tableStr = "<h3>近 " + periods + " 期 - 开奖统计：</h3>";
           tableStr += "<table>";
-          tableStr += "<tr><th>生肖</th>";
-          for (var zodiac in zodiacCounts) {
+          tableStr += "<tr><th>生肖</th><th>开奖次数</th><th>连续开奖次数</th></tr>";
+          zodiacs.forEach(function(zodiac) {
+            tableStr += "<tr>";
             tableStr += "<td>" + zodiac + "</td>";
-          }
-          tableStr += "</tr>";
-          tableStr += "<tr><th>次数</th>";
-          for (var zodiac in zodiacCounts) {
             tableStr += "<td>" + zodiacCounts[zodiac] + "</td>";
-          }
-          tableStr += "</tr>";
+            tableStr += "<td>" + maxCounts[zodiac] + "</td>";
+            tableStr += "</tr>";
+          });
           tableStr += "</table>";
-          // 显示结果在网页上
+          
+          // 顯示結果在網頁上
           var resultDiv = document.getElementById("result");
           resultDiv.innerHTML = tableStr;
         })
