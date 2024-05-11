@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>连肖生成器</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  label {
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+  <h1>连肖生成器</h1>
+  <label>排除</label>
+  <input type="checkbox" id="excludeRat" value="鼠">
+  <label for="excludeRat">鼠</label>
+  <input type="checkbox" id="excludeOx" value="牛">
+  <label for="excludeOx">牛</label>
+  <input type="checkbox" id="excludeTiger" value="虎">
+  <label for="excludeTiger">虎</label>
+  <input type="checkbox" id="excludeRabbit" value="兔">
+  <label for="excludeRabbit">兔</label>
+  <input type="checkbox" id="excludeDragon" value="龙">
+  <label for="excludeDragon">龙</label>
+  <input type="checkbox" id="excludeSnake" value="蛇">
+  <label for="excludeSnake">蛇</label>
+  <input type="checkbox" id="excludeHorse" value="马">
+  <label for="excludeHorse">马</label>
+  <input type="checkbox" id="excludeGoat" value="羊">
+  <label for="excludeGoat">羊</label>
+  <input type="checkbox" id="excludeMonkey" value="猴">
+  <label for="excludeMonkey">猴</label>
+  <input type="checkbox" id="excludeRooster" value="鸡">
+  <label for="excludeRooster">鸡</label>
+  <input type="checkbox" id="excludeDog" value="狗">
+  <label for="excludeDog">狗</label>
+  <input type="checkbox" id="excludePig" value="猪">
+  <label for="excludePig">猪</label>
+  <br><br>
+  <label>生肖数量:</label>
+  <select id="animalCount">
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+  <br><br>
+  <label>生成组数:</label>
+  <input type="number" id="groupCount" min="1" value="5">
+  <br><br>
+  <button onclick="generateCombination()">生成组合</button>
+  <br><br>
+  <div id="output"></div>
+  <br><br>
+  <button onclick="copyToClipboard()">复制到剪贴板</button>
+
+  <script>
+    function generateCombination() {
+      var animals = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
+      var excludedAnimals = [];
+      var checkboxes = document.querySelectorAll('input[type=checkbox]:checked');
+      checkboxes.forEach(function(checkbox) {
+        excludedAnimals.push(checkbox.value);
+      });
+
+      var animalCount = parseInt(document.getElementById("animalCount").value);
+      var groupCount = parseInt(document.getElementById("groupCount").value);
+
+      var combinations = [];
+
+      while (combinations.length < groupCount) {
+        var combination = [];
+        while (combination.length < animalCount) {
+          var animal = animals[Math.floor(Math.random() * animals.length)];
+          if (!excludedAnimals.includes(animal) && !combination.includes(animal)) {
+            combination.push(animal);
+          }
+        }
+        combinations.push(combination.join(", "));
+      }
+
+      var outputDiv = document.getElementById("output");
+      outputDiv.innerHTML = "<h2>生成的组合:</h2>";
+      for (var i = 0; i < combinations.length; i++) {
+        outputDiv.innerHTML += "<p>" + (i + 1) + ". " + combinations[i] + "</p>";
+      }
+    }
+
+    function copyToClipboard() {
+      var outputDiv = document.getElementById("output");
+      var textArea = document.createElement("textarea");
+      var combinations = [];
+      outputDiv.querySelectorAll('p').forEach(function(p) {
+        combinations.push(p.textContent.trim());
+      });
+      textArea.value = combinations.join("\n");
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      alert("已复制到剪贴板");
+    }
+  </script>
+</body>
+</html>
