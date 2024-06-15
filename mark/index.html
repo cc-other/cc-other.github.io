@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>号码生成报表</title>
+<style>
+/* 浮动图标的样式 */
+.floating-icon {
+position: fixed;
+top: 5px;
+right: 10px;
+background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色 */
+color: white;
+border-radius: 50%; /* 圆形 */
+padding: 10px;
+font-size: 24px;
+text-align: center;
+box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+cursor: pointer;
+z-index: 9999; /* 确保在最上层 */
+width: 25px; /* 宽度 */
+height: 25px; /* 高度 */
+display: flex;
+justify-content: center;
+align-items: center;
+}
+/* 菜单的样式 */
+.menu {
+display: none;
+position: fixed;
+top: 28px; /* 调整为距离顶部的距离 */
+right: 30px; /* 调整为距离右侧的距离 */
+z-index: 1;
+padding: 12px;
+border-radius: 8px;
+width: 200px;
+}
+/* 菜单项的样式 */
+.menu-item {
+padding: 10px;
+border-radius: 6px;
+border: none;
+text-align: center;
+cursor: pointer;
+font-size: 16px;
+background-color: #53868B; /* 按钮背景色 */
+color: #fff;
+transition: background-color 0.3s;
+margin-bottom: 5px;
+}
+.menu-item:hover {
+background-color: #458B00; /* 按钮悬停时的背景色 */
+}
+.menu-item:last-child {
+margin-bottom: 0; /* 去除最后一个菜单项的底部边距 */
+}
+</style>
+<style>
+/* 页面主体样式 */
+.container {
+max-width: 98%;
+margin: 5px auto;
+padding: 10px;
+background-color: #fff;
+border-radius: 10px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+h1 {
+margin-top: 5px;
+text-align: center;
+margin-bottom: 5px;
+font-size: 16px;
+}
+#textInput {
+width: calc(100% - 40px);
+margin-top: 5px;
+margin-bottom: 2px;
+padding: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+resize: none;
+font-size: 16px;
+overflow-x: auto;
+}
+#textInput {
+height: 170px;
+}
+button {
+display: inline-block;
+width: calc(33.3% - 10px);
+padding: 5px;
+font-size: 16px;
+background-color: #7f7f7f;
+color: #fff;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s;
+margin-bottom: 5px;
+}
+button:hover {
+filter: brightness(85%);
+}
+#ClearButton {
+width: calc(33.3% - 10px);
+background-color: #7f7f7f;
+}
+#copyButton {
+width: calc(33.3% - 10px);
+background-color: #ff7f0e;
+}
+#ZodiacsButton {
+width: calc(33.3% - 10px);
+background-color: #008080;
+}
+#copyRedButton {
+width: calc(33.3% - 10px);
+background-color: #E71607;
+}
+#copyGreenButton {
+width: calc(33.3% - 10px);
+background-color: #1DB61F;
+}
+#copyBlueButton {
+width: calc(33.3% - 10px);
+background-color: #3366ff;
+}
+#resultBox {
+width: calc(100% - 20px);
+min-height: 120px;
+margin-bottom: 5px;
+padding: 0px;
+border: 1px solid #ccc;
+border-radius: 5px;
+background-color: #f9f9f9;
+font-size: 16px;
+line-height: 1.5;
+}
+.bg_red {
+background-color: #ff0000;
+color: #ffffff;
+}
+.bg_blue {
+background-color: #0000ff;
+color: #ffffff;
+}
+.bg_green {
+background-color: #00ff00;
+color: #000000;
+}
+/* 表格样式 */
+.ZodiacTable table {
+width: 100%;
+border-collapse: collapse;
+margin-bottom: 0px;
+}
+.ZodiacTable th, .ZodiacTable td {
+border: 1px solid #ddd;
+padding: 6px;
+text-align: left;
+position: relative;
+}
+.ZodiacTable th {
+background-color: #f2f2f2;
+}
+.ZodiacTable tr:nth-child(even) {
+background-color: #f8f8f8;
+}
+.ZodiacTable .bg_red, .ZodiacTable .bg_blue, .ZodiacTable .bg_green, .ZodiacTable .bg_gray {
+display: inline-block;
+width: 27px;
+height: 27px;
+line-height: 27px;
+border-radius: 50%;
+text-align: center;
+margin-right: 5px;
+position: relative;
+}
+.ZodiacTable .highlight-overlay {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(245, 245, 220, 0.8);
+border-radius: 50%;
+pointer-events: none;
+}
+/* 控制感叹号显示的类 */
+.ZodiacTable span::before {
+display: none;
+content: "•";
+position: absolute;
+font-size: 20px; /* 调整感叹号的大小 */
+color: red; /* 设置感叹号的颜色 */
+left: 100%; /* 感叹号水平居中 */
+font-weight: bold; /* 设置感叹号为粗体 */
+transform: translate(-50%, -50%); /* 将感叹号居中 */
+z-index: 1; /* 确保感叹号位于球型图案之上 */
+pointer-events: none;
+}
+.ZodiacTable span.exclamation-visible::before {
+display: inline-block; /* 当具有exclamation-visible类时显示感叹号 */
+}
+.ZodiacTable .bg_red {
+background-color: #E71607;
+color: #fff;
+}
+.ZodiacTable .bg_blue {
+background-color: #3366ff;
+color: #fff;
+}
+.ZodiacTable .bg_green {
+background-color: #1DB61F;
+color: #fff;
+}
+@media only screen and (max-width: 100%) {
+.ZodiacTable th, .ZodiacTable td {
+padding: 4px;
+}
+}
+</style>
+</head>
+<body>
+<!-- 浮动图标 -->
+<div class="floating-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
+<!-- 菜单 -->
+<div class="menu" id="menu">
+<div class="menu-item" onclick="navigateTo('index.html')">号码-生成报表</div>
+<div class="menu-item" onclick="navigateTo('ExtractZodiacs.html')">杀肖-提取统计</div>
+<div class="menu-item" onclick="navigateTo('ExtractNumberCount.html')">号码-提取统计</div>
+<div class="menu-item" onclick="navigateTo('ExtractNumberTable.html')">号码-提取报表</div>
+</div>
+<script>
+// 切换菜单的显示状态
+function toggleMenu() {
+var menu = document.getElementById("menu");
+menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+// 点击菜单项后导航到相应页面
+function navigateTo(url) {
+window.location.href = url;
+}
+</script>
+<div class="container">
+<textarea id="textInput" placeholder="输入号码..." spellcheck="false"></textarea>
+<div class="button-group">
+<button id="copyButton" onclick="copyToClipboard()">复制</button>
+<button id="ZodiacsButton" onclick="highlightNumbers()">报表</button>
+<button id="ClearButton" onclick="clearCount()">清空</button>
+<button id="copyGreenButton" onclick="extractAndCopyColoredNumbers('green')">绿</button>
+<button id="copyRedButton" onclick="extractAndCopyColoredNumbers('red')">红</button>
+<button id="copyBlueButton" onclick="extractAndCopyColoredNumbers('blue')">蓝</button>
+<div id="totalCount" style="margin-bottom: 5px;">计数: </div>
+</div>
+<div class="con ZodiacTable" id="resultBox">
+<table>
+<thead>
+<tr>
+<th>生肖</th>
+<th>号码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>鼠</td>
+<td>
+<span id="number_05" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>05</span>
+<span id="number_17" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>17</span>
+<span id="number_29" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>29</span>
+<span id="number_41" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>41</span>
+</td>
+</tr>
+<tr>
+<td>牛</td>
+<td>
+<span id="number_04" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>04</span>
+<span id="number_16" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>16</span>
+<span id="number_28" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>28</span>
+<span id="number_40" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>40</span>
+</td>
+</tr>
+<tr>
+<td>虎</td>
+<td>
+<span id="number_03" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>03</span>
+<span id="number_15" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>15</span>
+<span id="number_27" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>27</span>
+<span id="number_39" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>39</span>
+</td>
+</tr>
+<tr>
+<td>兔</td>
+<td>
+<span id="number_02" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>02</span>
+<span id="number_14" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>14</span>
+<span id="number_26" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>26</span>
+<span id="number_38" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>38</span>
+</td>
+</tr>
+<tr>
+<td>龙</td>
+<td>
+<span id="number_01" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>01</span>
+<span id="number_13" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>13</span>
+<span id="number_25" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>25</span>
+<span id="number_37" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>37</span>
+<span id="number_49" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>49</span>
+</td>
+</tr>
+<tr>
+<td>蛇</td>
+<td>
+<span id="number_12" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>12</span>
+<span id="number_24" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>24</span>
+<span id="number_36" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>36</span>
+<span id="number_48" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>48</span>
+</td>
+</tr>
+<tr>
+<td>马</td>
+<td>
+<span id="number_11" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>11</span>
+<span id="number_23" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>23</span>
+<span id="number_35" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>35</span>
+<span id="number_47" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>47</span>
+</td>
+</tr>
+<tr>
+<td>羊</td>
+<td>
+<span id="number_10" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>10</span>
+<span id="number_22" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>22</span>
+<span id="number_34" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>34</span>
+<span id="number_46" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>46</span>
+</td>
+</tr>
+<tr>
+<td>猴</td>
+<td>
+<span id="number_09" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>09</span>
+<span id="number_21" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>21</span>
+<span id="number_33" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>33</span>
+<span id="number_45" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>45</span>
+</td>
+</tr>
+<tr>
+<td>鸡</td>
+<td>
+<span id="number_08" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>08</span>
+<span id="number_20" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>20</span>
+<span id="number_32" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>32</span>
+<span id="number_44" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>44</span>
+</td>
+</tr>
+<tr>
+<td>狗</td>
+<td>
+<span id="number_07" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>07</span>
+<span id="number_19" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>19</span>
+<span id="number_31" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>31</span>
+<span id="number_43" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>43</span>
+</td>
+</tr>
+<tr>
+<td>猪</td>
+<td>
+<span id="number_06" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>06</span>
+<span id="number_18" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>18</span>
+<span id="number_30" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>30</span>
+<span id="number_42" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>42</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+const inputText = document.getElementById("textInput");
+inputText.value = localStorage.getItem("highlightNumbers") || "";
+inputText.addEventListener("input", function() {
+localStorage.setItem("highlightNumbers", inputText.value);
+});
+});
+function extractAndFormatNumbers(text) {
+text = text.replace(/o|O/g, '0');
+const regex = /\b\d{1,2}\b/g;
+const matches = text.match(regex);
+if (!matches) {
+return [];
+}
+const filteredAndFormattedMatches = matches
+.map(num => parseInt(num, 10))
+.filter(num => num >= 1 && num <= 49)
+.map(num => num < 10 ? '0' + num : num.toString());
+return filteredAndFormattedMatches;
+}
+function copyToClipboard() {
+const resultTextarea = document.getElementById('textInput');
+resultTextarea.select();
+resultTextarea.setSelectionRange(0, 99999);
+try {
+document.execCommand('copy');
+alert('已复制到剪贴板');
+} catch (err) {
+console.error('复制失败:', err);
+}
+}
+function clearTotalCount() {
+const totalCountDiv = document.getElementById('totalCount');
+totalCountDiv.innerText = `计数: 0 号码`;
+}
+function displayTotalCount(count,nCount) {
+const totalCountDiv = document.getElementById('totalCount');
+var stringCount;
+if(nCount>0){
+stringCount = `计数/重复: ${count}/${nCount} 号码`;
+}else{
+stringCount= `计数: ${count} 号码`;
+}
+totalCountDiv.innerText =stringCount;
+}
+function copyResult() {
+var resultBox = document.getElementById("resultBox");
+resultBox.focus();
+document.execCommand("selectAll");
+document.execCommand("copy");
+alert("已复制");
+}
+function clearCount() {
+document.getElementById('textInput').value = '';
+localStorage.removeItem('highlightNumbers');
+highlightNumbers();
+}
+function highlightNumbers() {
+var inputText = document.getElementById("textInput").value;
+var numberArray = extractAndFormatNumbers(inputText);
+var repeatedNumbers = [];
+var numberCount = {}; 
+numberArray.forEach(function (number) {
+if (numberCount[number]) {
+numberCount[number]++;
+if (!repeatedNumbers.includes(number)) {
+repeatedNumbers.push(number);
+}
+} else {
+numberCount[number] = 1;
+}
+});
+if (numberArray.length > 0) {
+displayTotalCount(numberArray.length, repeatedNumbers.length);
+} else {
+clearTotalCount();
+}
+var allSpans = document.querySelectorAll('.ZodiacTable span');
+//var allSpans = document.querySelectorAll('.ZodiacTable span');
+allSpans.forEach(function (span) {
+var number = span.textContent.trim();
+var exclamation = span.querySelector('.exclamation');
+if (repeatedNumbers.includes(number)) {
+if (exclamation) {
+span.classList.add('exclamation-visible'); // 添加类以显示感叹号
+}
+} else {
+if (exclamation) {
+span.classList.remove('exclamation-visible'); // 移除类以隐藏感叹号
+}
+}
+var overlayElement = span.querySelector('.highlight-overlay');
+if (numberArray.includes(number)) {
+if (overlayElement) {
+overlayElement.style.display = 'none'; // Hide overlay
+span.style.fontWeight = 'bold'; // 恢复字体为普通
+overlayElement.style.backgroundColor = 'transparent'; // 恢复透明层颜色
+}
+} else {
+if (overlayElement) {
+overlayElement.style.display = 'block'; // Show overlay
+span.style.fontWeight = 'normal'; // 设置字体为粗体
+overlayElement.style.backgroundColor = 'rgba(245,245,220, 0.8)'; // 设置透明层颜色
+}
+}
+});
+updateButtonCount('copyGreenButton','green');
+updateButtonCount('copyRedButton','red');
+updateButtonCount('copyBlueButton','blue');
+}
+function updateButtonCount(buttonId, color) {
+let extractedNumbers = extractHighlightedNumbers(color);
+let count = extractedNumbers ? extractedNumbers.split(',').length : 0;
+let button = document.getElementById(buttonId);
+button.textContent = button.textContent.split(' ')[0] + ` (${count})`;
+}
+function extractHighlightedNumbers(color) {
+let allNumberElements = document.querySelectorAll(`.bg_${color}`);
+let extractedNumbers = [];
+allNumberElements.forEach(element => {
+if (element.style.fontWeight === 'bold') {
+extractedNumbers.push(element.textContent.trim());
+}
+});
+return extractedNumbers.join(',');
+}
+function copyTextToClipboard(text) {
+const tempTextArea = document.createElement('textarea');
+tempTextArea.value = text;
+document.body.appendChild(tempTextArea);
+tempTextArea.select();
+document.execCommand('copy');
+document.body.removeChild(tempTextArea);
+alert('已复制到剪贴板');
+}
+function extractAndCopyColoredNumbers(color) {
+const extractedNumbers = extractHighlightedNumbers(color);
+copyTextToClipboard(extractedNumbers);
+}
+</script>
+</body>
+</html>

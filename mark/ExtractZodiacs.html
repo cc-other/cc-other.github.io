@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 引入CodeMirror的CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+<!-- 引入CodeMirror的JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+<!-- 引入CodeMirror的Line Numbers插件 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/addon/display/placeholder.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/addon/selection/active-line.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/addon/edit/matchtags.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/addon/scroll/simplescrollbars.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/addon/scroll/simplescrollbars.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/addon/edit/closetag.min.js"></script>
+<title>杀肖-提取统计</title>
+<style>
+/* 浮动图标的样式 */
+.floating-icon {
+position: fixed;
+top: 5px;
+right: 10px;
+background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色 */
+color: white;
+border-radius: 50%; /* 圆形 */
+padding: 10px;
+font-size: 24px;
+text-align: center;
+box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+cursor: pointer;
+z-index: 9999; /* 确保在最上层 */
+width: 25px; /* 宽度 */
+height: 25px; /* 高度 */
+display: flex;
+justify-content: center;
+align-items: center;
+}
+/* 菜单的样式 */
+.menu {
+    display: none;
+    position: fixed;
+    top: 28px; /* 调整为距离顶部的距离 */
+    right: 30px; /* 调整为距离右侧的距离 */
+    z-index: 1;
+    padding: 12px;
+    border-radius: 8px;
+    width: 200px;
+}
+/* 菜单项的样式 */
+.menu-item {
+padding: 10px;
+border-radius: 6px;
+border: none;
+text-align: center;
+cursor: pointer;
+font-size: 16px;
+background-color: #53868B; /* 按钮背景色 */
+color: #fff;
+transition: background-color 0.3s;
+margin-bottom: 5px;
+}
+.menu-item:hover {
+background-color: #458B00; /* 按钮悬停时的背景色 */
+}
+.menu-item:last-child {
+margin-bottom: 0; /* 去除最后一个菜单项的底部边距 */
+}
+</style>
+<style>
+.container {
+max-width: 95%;
+margin: 5px auto;
+padding: 20px;
+background-color: #fff;
+border-radius: 10px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+h1 {
+text-align: center;
+}
+#result {
+width: calc(100% - 40px);
+height: 20px;
+margin-bottom: 5px;
+padding: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+resize: none;
+font-size: 16px;
+}
+#inputText {
+width: calc(100% - 40px);
+height: 60px;
+margin-bottom: 5px;
+padding: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+resize: none;
+font-size: 16px;
+overflow-x: auto;
+}
+#textInput {
+width: calc(100% - 40px);
+height: 380px;
+margin-bottom: 5px;
+padding: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+resize: none;
+font-size: 16px;
+}
+button {
+display: inline-block;
+width: calc(25% - 10px);
+padding: 10px;
+font-size: 16px;
+background-color: #7f7f7f;
+color: #fff;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s;
+margin-bottom: 5px;
+}
+.spring-button { background-color: #28a745; }
+.summer-button { background-color: #ff7f0e; }
+.autumn-button { background-color: #d62728; }
+.winter-button { background-color: #1f77b4; }
+.qin-button { background-color: #9467bd; }
+.qi-button { background-color: #8c564b; }
+.shu-button { background-color: #3399; }
+.hua-button { background-color: #e377c2; }
+button:hover {
+filter: brightness(85%);
+}
+#resultBox {
+width: calc(100% - 40px);
+min-height: 120px;
+margin-bottom: 5px;
+padding: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+background-color: #f9f9f9;
+font-size: 16px;
+line-height: 1.5;
+white-space: pre-wrap;
+overflow-wrap: break-word;
+}
+#checkButton {
+display: inline-block;
+width: calc(75% - 10px);
+padding: 10px;
+font-size: 16px;
+background-color: #008080;
+color: #fff;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s;
+}
+#checkButton:hover {
+filter: brightness(85%);
+}
+#ZodiacsButton {
+display:  inline-block;
+width: calc(75% - 10px);
+padding: 10px;
+font-size: 16px;
+margin-top: 10px;
+background-color: #008080;
+color: #fff;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s;
+}
+#ZodiacsButton:hover {
+filter: brightness(85%);
+}
+#joinButton {
+display: inline-block;
+width: calc(75% - 10px);
+padding: 10px;
+font-size: 16px;
+background-color: #4F94CD;
+color: #fff;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s;
+margin-bottom: 5px;
+}
+#joinButton:hover {
+filter: brightness(85%);
+}
+#copyButton {
+display:  inline-block;
+width: calc(25% - 10px);
+padding: 10px;
+font-size: 16px;
+background-color: #28a745;
+color: #fff;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s;
+}
+#copyButton:hover {
+filter: brightness(85%);
+}#copyButton2 {
+display: inline-block;
+width: calc(75% - 10px);
+padding: 10px;
+font-size: 16px;
+background-color: #28a745;
+color: #fff;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s;
+}
+#copyButton2:hover {
+filter: brightness(85%);
+}
+</style>
+</head>
+<body><!-- 浮动图标 -->
+<!-- 浮动图标 -->
+<div class="floating-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
+<!-- 菜单 -->
+<div class="menu" id="menu">
+<div class="menu-item" onclick="navigateTo('index.html')">号码-生成报表</div>
+<div class="menu-item" onclick="navigateTo('ExtractZodiacs.html')">杀肖-提取统计</div>
+<div class="menu-item" onclick="navigateTo('ExtractNumberCount.html')">号码-提取统计</div>
+<div class="menu-item" onclick="navigateTo('ExtractNumberTable.html')">号码-提取报表</div>
+</div>
+<script>
+// 切换菜单的显示状态
+function toggleMenu() {
+var menu = document.getElementById("menu");
+menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+// 点击菜单项后导航到相应页面
+function navigateTo(url) {
+window.location.href = url;
+}
+</script>
+<div class="container">
+<div class="button-group">
+<button class="spring-button" onclick="copySeasonZodiac('spring')">春</button>
+<button class="summer-button" onclick="copySeasonZodiac('summer')">夏</button>
+<button class="autumn-button" onclick="copySeasonZodiac('autumn')">秋</button>
+<button class="winter-button" onclick="copySeasonZodiac('winter')">冬</button>
+</div>
+<div class="button-group">
+<button class="qin-button" onclick="copySeasonZodiac('qin')">琴</button>
+<button class="qi-button" onclick="copySeasonZodiac('qi')">棋</button>
+<button class="shu-button" onclick="copySeasonZodiac('shu')">书</button>
+<button class="hua-button" onclick="copySeasonZodiac('hua')">画</button>
+</div>
+<textarea id="inputText" placeholder="请输入文字"></textarea>
+<div class="button-group">
+<button id="checkButton" onclick="checkZodiac()">提取生肖</button>
+<button onclick="clearInput()">清空</button>
+</div>
+<div  class="button-group">
+<textarea id="result" ></textarea>
+<button id="joinButton"  onclick="addResultToInput()">↓↓↓</button>
+<button id="copyButton"  onclick="copyToClipboard()">复制</button>
+</div>
+<textarea id="textInput" placeholder="输入生肖..." spellcheck="false"></textarea>
+<div class="button-group">
+<button id="ZodiacsButton" onclick="countZodiacs()">统计生肖</button>
+<button onclick="clearCount()">清空</button>
+</div>
+<div id="resultBox" style="display:none" contenteditable="true"></div>
+<button id="copyButton2" style="display:none" onclick="copyResult()">复制</button>
+<button id="clearButton" onclick="clearResultBox()" style="display:none">清空</button>
+</div>
+<script>
+// 保存输入框内容到本地缓存
+var editor = CodeMirror.fromTextArea(document.getElementById("textInput"), {
+lineNumbers: true, // 显示行号
+lineWrapping: true,
+styleActiveLine: true, // 高亮当前行
+matchBrackets: true, // 匹配括号
+autoCloseBrackets: false, // 自动闭合括号
+mode: "text/plain", // 设置文本模式
+theme: "default", // 设置主题
+scrollbarStyle: "simple" // 设置滚动条样式
+});
+editor.setSize('calc(100% - 20px)');
+// 在textarea输入时，动态更新CodeMirror中的内容
+editor.on("change", function(cm) {
+editor.setOption("lineNumbers", true); // 设置显示行号
+editor.save(); // 保存内容
+var editorContent = editor.getValue();
+// 将内容保存到缓存
+localStorage.setItem("Zodiacs", editorContent);
+});
+document.addEventListener("DOMContentLoaded", function() {
+// 从缓存中读取内容
+const cachedTextInput = localStorage.getItem("Zodiacs");
+// 如果缓存中有内容，则显示在输入框中
+if (cachedTextInput) {
+// 更新CodeMirror实例以显示新的内容
+editor.setValue(cachedTextInput);
+}
+});
+const zodiacSimplified = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
+const zodiacTraditional = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
+const allZodiacs = [...zodiacSimplified, ...zodiacTraditional];
+const seasons = {
+spring: ['兔', '虎', '龙'],
+summer: ['马', '蛇', '羊'],
+autumn: ['鸡', '猴', '狗'],
+winter: ['鼠', '猪', '牛'],
+/*琴棋书画*/
+qin: ['鸡', '兔', '蛇'],
+qi: ['鼠', '牛', '狗'],
+shu: ['马', '龙', '虎'],
+hua: ['羊', '猴', '猪']
+};
+function checkZodiac() {
+const input = document.getElementById('inputText').value;
+const zodiacs = input.match(/[鼠牛虎兔龙蛇马羊猴鸡狗猪]|[鼠牛虎兔龍蛇馬羊猴雞狗豬]/g);
+const resultTextarea = document.getElementById('result');
+const copyButton = document.getElementById('copyButton');
+let missingZodiac = [...zodiacSimplified];
+if (zodiacs) {
+zodiacs.forEach(zodiac => {
+const indexSimplified = zodiacSimplified.indexOf(zodiac);
+const indexTraditional = zodiacTraditional.indexOf(zodiac);
+if (indexSimplified !== -1) missingZodiac[indexSimplified] = null;
+if (indexTraditional !== -1) missingZodiac[indexTraditional] = null;
+});
+}
+missingZodiac = missingZodiac.filter(zodiac => zodiac !== null);
+if (missingZodiac.length > 0) {
+resultTextarea.value = `${missingZodiac.join('-')}`;
+} else {
+resultTextarea.value = "";
+}
+}
+
+function copyToClipboard() {
+const resultTextarea = document.getElementById('result');
+resultTextarea.select();
+resultTextarea.setSelectionRange(0, 99999); // For mobile devices
+try {
+document.execCommand('copy');
+alert('结果已复制到剪贴板');
+} catch (err) {
+console.error('复制失败:', err);
+}
+}
+function clearInput() {
+document.getElementById('inputText').value = '';
+document.getElementById('result').value = '';
+}
+function clearResultBox() {
+document.getElementById("resultBox").innerText = '';
+}
+function copyToClipboard() {
+const resultTextarea = document.getElementById('result');
+resultTextarea.select();
+resultTextarea.setSelectionRange(0, 99999); // For mobile devices
+try {
+document.execCommand('copy');
+alert('已复制');
+} catch (err) {
+console.error('复制失败:', err);
+}
+}
+function copySeasonZodiac(season) {
+const seasonZodiac = seasons[season].join('-');
+document.getElementById("result").value=seasonZodiac;
+}
+function countZodiacs() {
+    let editorContent = editor.getValue();
+    let lines = editorContent.split('\n').filter(line => line.trim() !== '');
+    editor.setValue(lines.join('\n'));
+    let lineCount = {};
+    lines.forEach(line => {
+        lineCount[line] = (lineCount[line] || 0) + 1;
+    });
+
+    let totalLines = lines.length;
+
+    var zodiacs = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
+    var countMap = {};
+    // 过滤非十二生肖字符
+    const input = document.getElementById('textInput').value;
+    var filteredText = input.replace(new RegExp("[^" + zodiacs.join("") + "]", "g"), "");
+    // 统计每个生肖的出现次数
+    for (var i = 0; i < filteredText.length; i++) {
+        var char = filteredText.charAt(i);
+        if (zodiacs.includes(char)) {
+            if (countMap[char]) {
+                countMap[char]++;
+            } else {
+                countMap[char] = 1;
+            }
+        }
+    }
+    // 构建结果文本
+    var resultText = `【杀次✔准确率】：(总: ${totalLines}份/${filteredText.length}次)\n`;
+    var groupedCounts = {};
+    zodiacs.forEach(function(zodiac) {
+        var count = countMap[zodiac] || 0;
+        if (!groupedCounts[count]) {
+            groupedCounts[count] = [];
+        }
+        groupedCounts[count].push(zodiac);
+    });
+
+    // 修改部分开始：处理超过8个的统计长度换行显示
+    Object.keys(groupedCounts).sort((a, b) => b - a).forEach(function(count) {
+        var zodiacs = groupedCounts[count];
+        var zodiacGroups = [];
+        while (zodiacs.length > 0) {
+            zodiacGroups.push(zodiacs.splice(0, 8).join("-"));
+        }
+        var countFormatted = count.toString().padStart(2, '0');
+        zodiacGroups.forEach(function(group) {
+            let Percentage = calculatePercentage(count, totalLines,2); // 计算百分比
+            resultText += `【${countFormatted}✔${Percentage}】：${group}\n`;
+        });
+    });
+    // 修改部分结束
+
+
+    document.getElementById("resultBox").innerText = resultText;
+    // 显示resultBox和copyButton2
+    document.getElementById("resultBox").style.display = "block";
+    document.getElementById("copyButton2").style.display = "inline-block";
+    document.getElementById("clearButton").style.display = "inline-block";
+    var resultBox = document.getElementById("copyButton2");
+    resultBox.scrollIntoView(false);
+}
+
+function copyResult() {
+var resultBox = document.getElementById("resultBox");
+resultBox.focus();
+document.execCommand("selectAll");
+document.execCommand("copy");
+alert("已复制");
+}
+function clearCount() {
+editor.setValue("");
+localStorage.removeItem('Zodiacs');
+}
+function addResultToInput() {
+// 获取结果输入框的内容
+var result = document.getElementById("result").value;
+if(result==""){
+return
+}
+// 将结果添加到编辑器的最后一行
+if (editor.getValue() == "") {
+editor.setValue(result);
+} else {
+var cursor = editor.getCursor();
+var lastLine = editor.lastLine();
+var lastLineContent = editor.getLine(lastLine);
+if (lastLineContent.trim() !== "") {
+editor.replaceRange("\n" + result, { line: lastLine + 1, ch: 0 });
+} else {
+editor.replaceRange(result, { line: lastLine, ch: lastLineContent.length });
+}
+}
+// 将光标移动到最后一行
+var lastLine = editor.lastLine();
+var lastLinePos = editor.posFromIndex(editor.getValue().length);
+editor.setCursor(lastLine, lastLinePos.ch);
+// 实时保存内容到缓存
+localStorage.setItem("Zodiacs", editor.getValue());
+}
+// 计算百分比
+// 计算百分比
+function calculatePercentage(part, total,countstyle) {
+	if(countstyle==2){
+		part=total-part;
+	}
+	var Percentage=(total === 0 ? 0 : (part/ total) * 100).toFixed(0);
+	let  PercentageFormatted = Percentage.toString().padStart(2, '0')+ '%';
+    return PercentageFormatted;
+}
+</script>
+</body>
+</html>
