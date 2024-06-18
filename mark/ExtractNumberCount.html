@@ -134,11 +134,11 @@ filter: brightness(85%);
 width: calc(100% - 40px);
 min-height: 120px;
 margin-bottom: 5px;
-padding: 10px;
+padding: 5px;
 border: 1px solid #ccc;
 border-radius: 5px;
 background-color: #f9f9f9;
-font-size: 16px;
+font-size: 15px;
 line-height: 1.5;
 white-space: pre-wrap;
 overflow-wrap: break-word;
@@ -443,13 +443,13 @@ function countNumbers() {
     // 计算总次数
     var totalCount = filteredNumbers ? filteredNumbers.length : 0;
     // 构建结果文本
-    var resultText = `【出次✔准确率】：(总: ${totalLines}份/${totalCount}次)\n`;
+    var resultText = `【出次✓准确率】(总: ${totalLines}份/${totalCount}次)\n`;
     var countstyle = 1;
     if (document.querySelector('input[name="zodiacOption"]:checked').value === 'option1') {
-        resultText = `【出次✔准确率】：(总: ${totalLines}份/${totalCount}次)\n`;
+        resultText = `【出次✓准确率】(总: ${totalLines}份/${totalCount}次)\n`;
         countstyle = 1;
     } else {
-        resultText = `【杀次✔准确率】：(总: ${totalLines}份/${totalCount}次)\n`;
+        resultText = `【杀次✓准确率】(总: ${totalLines}份/${totalCount}次)\n`;
         countstyle = 2;
     }
 
@@ -463,32 +463,35 @@ function countNumbers() {
             groupedCounts[count].push(number);
         }
     });
+	var countNum=0;
     Object.keys(groupedCounts).sort((a, b) => b - a).forEach(function(count) {
         var nums = groupedCounts[count];
         var numGroups = [];
         while (nums.length > 0) {
-            numGroups.push(nums.splice(0, 8).join("-"));
+            numGroups.push(nums.splice(0, 10).join(","));
         }
         var countFormatted = count.toString().padStart(2, '0');
-
         numGroups.forEach(function(group) {
             let Percentage = calculatePercentage(count, totalLines, countstyle);
-            resultText += `【${countFormatted}✔${Percentage}】：${group}\n`;
-        });
+            //resultText += `【${countFormatted}✓${Percentage}】${group} `;
+			resultText += `【${countFormatted}✓${Percentage}】${group} (${group.split(',').length}个)\n`;
+        }
+		);
     });
-
     // 添加统计未出现数字的功能，并使用相同的格式显示
 	if(countstyle==2){
 		var missingNumbers = numbers.filter(number => countMap[number] === 0);
 		if (missingNumbers.length > 0) {
 			var missingGroups = [];
 			while (missingNumbers.length > 0) {
-				missingGroups.push(missingNumbers.splice(0, 8).join("-"));
+				missingGroups.push(missingNumbers.splice(0, 10).join(","));
 			}
 			var countFormatted = "00";
 			missingGroups.forEach(function(group) {
+				countNum+=1;
 				let Percentage = calculatePercentage(0, totalLines, countstyle);
-				resultText += `【${countFormatted}✔${Percentage}】：${group}\n`;
+				resultText += `【${countFormatted}✓${Percentage}】${group} (${group.split(',').length}个)\n`;
+         
 			});
     }}
 
