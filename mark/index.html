@@ -5,11 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>号码生成报表</title>
 <style>
+/* 右上角浮动图标的样式 */
+#menuIconTopRight {
+    top: 15px; /* 固定位置 */
+    right: 15px;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色 */
+    color: white;
+    border-radius: 50%; /* 圆形 */
+    padding: 10px;
+    font-size: 24px;
+    text-align: center;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    cursor: pointer;
+    z-index: 9999; /* 确保在最上层 */
+    width: 25px; /* 宽度 */
+    height: 25px; /* 高度 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 右上角菜单的样式 */
+#menuTopRight {
+    display: none;
+    position: fixed;
+    top: 50px; /* 调整为距离顶部的距离 */
+    right: 20px; /* 调整为距离右侧的距离 */
+    z-index: 1;
+    padding: 12px;
+    border-radius: 8px;
+    width: 150px;
+}
+
 /* 浮动图标的样式 */
 .floating-icon {
 position: fixed;
-top: 5px;
-right: 10px;
+bottom : 68px;
+right: 15px;
 background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色 */
 color: white;
 border-radius: 50%; /* 圆形 */
@@ -29,12 +62,12 @@ align-items: center;
 .menu {
 display: none;
 position: fixed;
-top: 28px; /* 调整为距离顶部的距离 */
-right: 30px; /* 调整为距离右侧的距离 */
+bottom: 100px; /* 调整为距离顶部的距离 */
+right: 20px; /* 调整为距离右侧的距离 */
 z-index: 1;
 padding: 12px;
 border-radius: 8px;
-width: 200px;
+width: 150px;
 }
 /* 菜单项的样式 */
 .menu-item {
@@ -44,7 +77,7 @@ border: none;
 text-align: center;
 cursor: pointer;
 font-size: 16px;
-background-color: #53868B; /* 按钮背景色 */
+background-color:#53868B; /* 按钮背景色 */
 color: #fff;
 transition: background-color 0.3s;
 margin-bottom: 5px;
@@ -223,15 +256,52 @@ padding: 4px;
 </head>
 <body>
 <!-- 浮动图标 -->
+<!-- 右上角浮动图标 -->
+<div class="floating-icon" id="menuIconTopRight" onclick="toggleMenuTopRight()">☰</div>
+<!-- 右上角菜单 -->
+<div class="menu" id="menuTopRight">
+  <div class="menu-item" onclick="formatNumbers()">格式化-正常</div>
+  <div class="menu-item" onclick="formatColor()">格式化-波色</div>
+  <div class="menu-item" onclick="formatZodiacs()">格式化-生肖</div>
+</div>
+
+
 <div class="floating-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
 <!-- 菜单 -->
 <div class="menu" id="menu">
 <div class="menu-item" onclick="navigateTo('index.html')">号码-生成报表</div>
-<div class="menu-item" onclick="navigateTo('ExtractZodiacs.html')">杀肖-提取统计</div>
 <div class="menu-item" onclick="navigateTo('ExtractNumberCount.html')">号码-提取统计</div>
 <div class="menu-item" onclick="navigateTo('ExtractNumberTable.html')">号码-提取报表</div>
+<div class="menu-item" onclick="navigateTo('ExtractZodiacs.html')">杀肖-提取统计</div>
 </div>
 <script>
+// 切换右上角菜单的显示状态
+function toggleMenuTopRight() {
+    var menuTopRight = document.getElementById("menuTopRight");
+    menuTopRight.style.display = menuTopRight.style.display === "block" ? "none" : "block";
+}
+
+
+// 点击其他地方隐藏右上角菜单
+document.addEventListener("click", function(event) {
+    var menuTopRight = document.getElementById("menuTopRight");
+    var menuIconTopRight = document.getElementById("menuIconTopRight");
+
+    // 如果点击的不是右上角菜单或浮动图标，则隐藏菜单
+    if (!menuTopRight.contains(event.target) && !menuIconTopRight.contains(event.target)) {
+        menuTopRight.style.display = "none";
+    }
+});
+
+// 阻止右上角菜单和图标自身点击事件冒泡
+document.getElementById("menuTopRight").addEventListener("click", function(event) {
+    event.stopPropagation();
+});
+document.getElementById("menuIconTopRight").addEventListener("click", function(event) {
+    event.stopPropagation();
+});
+
+
 // 切换菜单的显示状态
 function toggleMenu() {
 var menu = document.getElementById("menu");
@@ -241,6 +311,25 @@ menu.style.display = menu.style.display === "block" ? "none" : "block";
 function navigateTo(url) {
 window.location.href = url;
 }
+
+// 点击其他地方隐藏菜单
+document.addEventListener("click", function(event) {
+    var menu = document.getElementById("menu");
+    var menuIcon = document.getElementById("menuIcon");
+    
+    // 如果点击的不是菜单或浮动图标，则隐藏菜单
+    if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+        menu.style.display = "none";
+    }
+});
+
+// 阻止菜单和图标自身点击事件冒泡
+document.getElementById("menu").addEventListener("click", function(event) {
+    event.stopPropagation();
+});
+document.getElementById("menuIcon").addEventListener("click", function(event) {
+    event.stopPropagation();
+});
 </script>
 <div class="container">
 <textarea id="textInput" placeholder="输入号码..." spellcheck="false"></textarea>
@@ -383,6 +472,126 @@ inputText.addEventListener("input", function() {
 localStorage.setItem("highlightNumbers", inputText.value);
 });
 });
+function formatNumbers() {
+    var inputText = document.getElementById("textInput");
+    var numberArray = extractAndFormatNumbers(inputText.value);
+
+    // 分组成每十个一行
+    const groupedLines = [];
+    let line = [];
+
+    numberArray.forEach((number, index) => {
+        line.push(number);
+
+        // 每十个一组，或者到达数组末尾时结束当前行
+        if (line.length === 5 || index === numberArray.length - 1) {
+            groupedLines.push(line.join(','));
+            line = []; // 清空当前行
+        }
+    });
+
+    // 生成输出字符串
+    let output = groupedLines.join('\n');
+
+    // 显示结果
+	document.getElementById("textInput").value=output;
+	localStorage.setItem("highlightNumbers", inputText.value);
+	var menu = document.getElementById("menuTopRight");
+	menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+function formatZodiacs() {
+    // 定义生肖对应的号码数组
+    const zodiacMap = {
+        "鼠": ["05", "17", "29", "41"],
+        "牛": ["04", "16", "28", "40"],
+        "虎": ["03", "15", "27", "39"],
+        "兔": ["02", "14", "26", "38"],
+        "龙": ["01", "13", "25", "37", "49"],
+        "蛇": ["12", "24", "36", "48"],
+        "马": ["11", "23", "35", "47"],
+        "羊": ["10", "22", "34", "46"],
+        "猴": ["09", "21", "33", "45"],
+        "鸡": ["08", "20", "32", "44"],
+        "狗": ["07", "19", "31", "43"],
+        "猪": ["06", "18", "30", "42"]
+    };
+
+	var inputText = document.getElementById("textInput");
+	var numberArray = extractAndFormatNumbers(inputText.value);
+
+    // 分别存储各生肖的号码
+    const zodiacNumbers = {};
+
+    // 根据生肖分类号码
+    numberArray.forEach(number => {
+        // 找到该号码属于哪个生肖
+        for (const zodiac in zodiacMap) {
+            if (zodiacMap[zodiac].includes(number)) {
+                if (!zodiacNumbers[zodiac]) {
+                    zodiacNumbers[zodiac] = [];
+                }
+                zodiacNumbers[zodiac].push(number);
+                break; // 找到后可以退出循环
+            }
+        }
+    });
+    
+    // 生成输出字符串
+    let output = "";
+    for (const zodiac in zodiacNumbers) {
+        if (zodiacNumbers[zodiac].length > 0) {
+            output += `${zodiac}: ${zodiacNumbers[zodiac].join(',')}\n`;
+        }
+    }
+
+    // 显示结果
+	document.getElementById("textInput").value=output;
+	localStorage.setItem("highlightNumbers", inputText.value);
+	var menu = document.getElementById("menuTopRight");
+	menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+function formatColor() {
+const redWave = ["01", "02", "07", "08", "12", "13", "18", "19", "23", "24", "29", "30", "34", "35", "40", "45", "46"];
+const blueWave = ["03", "04", "09", "10", "14", "15", "20", "25", "26", "31", "36", "37", "41", "42", "47", "48"];
+const greenWave = ["05", "06", "11", "16", "17", "21", "22", "27", "28", "32", "33", "38", "39", "43", "44", "49"];
+
+	var inputText = document.getElementById("textInput");
+	var numberArray = extractAndFormatNumbers(inputText.value);
+    
+    // 分别存储红波、蓝波和绿波的号码
+    const redNumbers = [];
+    const blueNumbers = [];
+    const greenNumbers = [];
+    
+    // 根据波色分类号码
+    numberArray.forEach(number => {
+        if (redWave.includes(number)) {
+            redNumbers.push(number);
+        } else if (blueWave.includes(number)) {
+            blueNumbers.push(number);
+        } else if (greenWave.includes(number)) {
+            greenNumbers.push(number);
+        }
+    });
+    
+    // 生成输出字符串
+    let output = "";
+    if (redNumbers.length > 0) {
+        output += "红: " + redNumbers.join(',') + "\n";
+    }
+    if (blueNumbers.length > 0) {
+        output += "蓝: " + blueNumbers.join(',') + "\n";
+    }
+    if (greenNumbers.length > 0) {
+        output += "绿: " + greenNumbers.join(',');
+    }
+	document.getElementById("textInput").value=output;
+	localStorage.setItem("highlightNumbers", inputText.value);
+	var menu = document.getElementById("menuTopRight");
+	menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
 function extractAndFormatNumbers(text) {
 text = text.replace(/o|O/g, '0');
 const regex = /\b\d{1,2}\b/g;
@@ -454,7 +663,6 @@ displayTotalCount(numberArray.length, repeatedNumbers.length);
 clearTotalCount();
 }
 var allSpans = document.querySelectorAll('.ZodiacTable span');
-//var allSpans = document.querySelectorAll('.ZodiacTable span');
 allSpans.forEach(function (span) {
 var number = span.textContent.trim();
 var exclamation = span.querySelector('.exclamation');
