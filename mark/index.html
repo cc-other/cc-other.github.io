@@ -36,37 +36,6 @@ padding: 12px;
 border-radius: 8px;
 width: 150px;
 }
-/* 浮动图标的样式 */
-.floating-icon {
-position: fixed;
-bottom : 68px;
-right: 15px;
-background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色 */
-color: white;
-border-radius: 50%; /* 圆形 */
-padding: 10px;
-font-size: 24px;
-text-align: center;
-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-cursor: pointer;
-z-index: 9999; /* 确保在最上层 */
-width: 25px; /* 宽度 */
-height: 25px; /* 高度 */
-display: flex;
-justify-content: center;
-align-items: center;
-}
-/* 菜单的样式 */
-.menu {
-display: none;
-position: fixed;
-bottom: 100px; /* 调整为距离顶部的距离 */
-right: 20px; /* 调整为距离右侧的距离 */
-z-index: 1;
-padding: 12px;
-border-radius: 8px;
-width: 150px;
-}
 /* 菜单项的样式 */
 .menu-item {
 padding: 10px;
@@ -75,7 +44,7 @@ border: none;
 text-align: center;
 cursor: pointer;
 font-size: 16px;
-background-color:#53868B; /* 按钮背景色 */
+background-color:#596895; /* 按钮背景色 */
 color: #fff;
 transition: background-color 0.3s;
 margin-bottom: 5px;
@@ -85,6 +54,81 @@ background-color: #458B00; /* 按钮悬停时的背景色 */
 }
 .menu-item:last-child {
 margin-bottom: 0; /* 去除最后一个菜单项的底部边距 */
+}
+/* 弹出窗口的样式 */
+.modal {
+  display: none; /* 初始隐藏 */
+  position: fixed;
+  z-index: 10000; /* 确保在最上层 */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* 如果内容超出窗口，滚动 */
+  background-color: rgba(0,0,0,0.5); /* 半透明背景 */
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto; /* 15% 上下边距 */
+  padding: 20px;
+  border: none; /* 移除边框 */
+  width: 90%; /* 宽度适应移动设备 */
+  max-width: 400px; /* 最大宽度 */
+  border-radius: 10px; /* 圆角 */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* 阴影效果 */
+  box-sizing: border-box;
+}
+.modal-content textarea {
+  width: 100%;
+  height: 350px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+.modal-content .button-group {
+  display: flex;
+  justify-content: space-between; /* 按钮间距 */
+  margin-top: 20px;
+}
+.modal-content button {
+  flex: 1; /* 平均分配空间 */
+  padding: 10px 0;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s; /* 过渡效果 */
+  margin: 0 5px; /* 按钮之间的间距 */
+}
+.modal-content button:first-child {
+  margin-left: 0; /* 移除第一个按钮的左边距 */
+}
+.modal-content button:last-child {
+  margin-right: 0; /* 移除最后一个按钮的右边距 */
+}
+.modal-content button:hover {
+  background-color: #ddd; /* 悬停时的背景颜色 */
+}
+.modal-content button:active {
+  background-color: #ccc; /* 点击时的背景颜色 */
+  transform: scale(0.95); /* 点击时的缩放效果 */
+}
+.modal-content button:nth-child(1) {
+  background-color: #4CAF50; /* 绿色，保存 */
+  color: white;
+}
+.modal-content button:nth-child(2) {
+  background-color: #f44336; /* 红色，清空 */
+  color: white;
+}
+.modal-content button:nth-child(3) {
+  background-color: #2196F3; /* 蓝色，关闭 */
+  color: white;
 }
 </style>
 <style>
@@ -233,6 +277,20 @@ pointer-events: none;
 .ZodiacTable span.exclamation-visible::before {
 display: inline-block; /* 当具有exclamation-visible类时显示感叹号 */
 }
+/* 右下角显示数字的样式 */
+.number-badge {
+//display: none;
+content: "•";
+position: absolute;
+top: 100%;
+font-size: 10px; /* 调整感叹号的大小 */
+color: red; /* 设置感叹号的颜色 */
+left: 100%; /* 感叹号水平居中 */
+font-weight: bold; /* 设置感叹号为粗体 */
+transform: translate(-50%, -50%); /* 将感叹号居中 */
+z-index: 1; /* 确保感叹号位于球型图案之上 */
+pointer-events: none;
+}
 .ZodiacTable .bg_red {
 background-color: #E71607;
 color: #fff;
@@ -253,7 +311,6 @@ padding: 4px;
 </style>
 </head>
 <body>
-<!-- 浮动图标 -->
 <!-- 右上角浮动图标 -->
 <div class="floating-icon" id="menuIconTopRight" onclick="toggleMenuTopRight()">☰</div>
 <!-- 右上角菜单 -->
@@ -263,17 +320,62 @@ padding: 4px;
 <div class="menu-item" onclick="formatNumbers()">格式化-正常</div>
 <div class="menu-item" onclick="formatColor()">格式化-波色</div>
 <div class="menu-item" onclick="formatZodiacs()">格式化-生肖</div>
-
+<div class="menu-item" onclick="showSettingsModal()">杀码设置</div>
+<div class="menu-item" onclick="navigateTo('index.html')">挑码报表</div>
+<div class="menu-item" onclick="navigateTo('ExtractZodiacs.html')">杀肖统计</div>
+<div class="menu-item" onclick="navigateTo('ExtractNumberCount.html')">号码统计</div>
 </div>
-<div class="floating-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
-<!-- 菜单 -->
-<div class="menu" id="menu">
-<div class="menu-item" onclick="navigateTo('index.html')">号码-生成报表</div>
-<div class="menu-item" onclick="navigateTo('ExtractNumberCount.html')">号码-提取统计</div>
-<div class="menu-item" onclick="navigateTo('ExtractNumberTable.html')">号码-提取报表</div>
-<div class="menu-item" onclick="navigateTo('ExtractZodiacs.html')">杀肖-提取统计</div>
+<!-- 弹出窗口 -->
+<div id="settingModal" class="modal">
+  <div class="modal-content">
+    <textarea id="settingkillnumber" placeholder="请输入内容..."></textarea>
+	    <div>
+      <label>
+        <input type="checkbox" id="showKillNumberCheckbox">
+        显示杀码
+      </label>
+    </div>
+    <div class="button-group">
+      <button onclick="saveSettings()">保存</button>
+      <button onclick="clearSettings()">清空</button>
+      <button onclick="closeModal()">关闭</button>
+    </div>
+  </div>
 </div>
 <script>
+//弹窗内容
+function showSettingsModal() {
+    document.getElementById("settingModal").style.display = "flex";
+	document.getElementById("settingkillnumber").value = localStorage.getItem("killnumber") 
+	const checkbox = document.getElementById("showKillNumberCheckbox");
+	checkbox.checked = localStorage.getItem("showKillNumber") === "true";
+	var menu = document.getElementById("menuTopRight");
+	menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+// 关闭弹出窗口
+function closeModal() {
+  document.getElementById("settingModal").style.display = "none";
+}
+// 保存内容到本地存储
+function saveSettings() {
+
+    const content = document.getElementById("settingkillnumber").value;
+    const checkbox = document.getElementById("showKillNumberCheckbox").checked;
+
+    localStorage.setItem("killnumber", content);
+    localStorage.setItem("showKillNumber", checkbox);
+	if (checkbox) {
+        countKillNumbers();
+    }else{
+		hideKillNumbers();
+	}
+    closeModal();
+}
+// 清空输入框和本地存储
+function clearSettings() {
+  document.getElementById("settingkillnumber").value = "";
+  localStorage.removeItem("killnumber");
+}
 // 切换右上角菜单的显示状态
 function toggleMenuTopRight() {
 var menuTopRight = document.getElementById("menuTopRight");
@@ -295,32 +397,10 @@ event.stopPropagation();
 document.getElementById("menuIconTopRight").addEventListener("click", function(event) {
 event.stopPropagation();
 });
-// 切换菜单的显示状态
-function toggleMenu() {
-var menu = document.getElementById("menu");
-menu.style.display = menu.style.display === "block" ? "none" : "block";
-}
 // 点击菜单项后导航到相应页面
 function navigateTo(url) {
 window.location.href = url;
 }
-// 点击其他地方隐藏菜单
-document.addEventListener("click", function(event) {
-var menu = document.getElementById("menu");
-var menuIcon = document.getElementById("menuIcon");
-
-// 如果点击的不是菜单或浮动图标，则隐藏菜单
-if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
-menu.style.display = "none";
-}
-});
-// 阻止菜单和图标自身点击事件冒泡
-document.getElementById("menu").addEventListener("click", function(event) {
-event.stopPropagation();
-});
-document.getElementById("menuIcon").addEventListener("click", function(event) {
-event.stopPropagation();
-});
 </script>
 <div class="container">
 <textarea id="textInput" placeholder="输入号码..." spellcheck="false"></textarea>
@@ -345,110 +425,110 @@ event.stopPropagation();
 <tr>
 <td>鼠</td>
 <td>
-<span id="number_05" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>05</span>
-<span id="number_17" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>17</span>
-<span id="number_29" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>29</span>
-<span id="number_41" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>41</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>05</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>17</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>29</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>41</span>
 </td>
 </tr>
 <tr>
 <td>牛</td>
 <td>
-<span id="number_04" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>04</span>
-<span id="number_16" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>16</span>
-<span id="number_28" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>28</span>
-<span id="number_40" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>40</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>04</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>16</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>28</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>40</span>
 </td>
 </tr>
 <tr>
 <td>虎</td>
 <td>
-<span id="number_03" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>03</span>
-<span id="number_15" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>15</span>
-<span id="number_27" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>27</span>
-<span id="number_39" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>39</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>03</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>15</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>27</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>39</span>
 </td>
 </tr>
 <tr>
 <td>兔</td>
 <td>
-<span id="number_02" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>02</span>
-<span id="number_14" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>14</span>
-<span id="number_26" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>26</span>
-<span id="number_38" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>38</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>02</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>14</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>26</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>38</span>
 </td>
 </tr>
 <tr>
 <td>龙</td>
 <td>
-<span id="number_01" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>01</span>
-<span id="number_13" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>13</span>
-<span id="number_25" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>25</span>
-<span id="number_37" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>37</span>
-<span id="number_49" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>49</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>01</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>13</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>25</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>37</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>49</span>
 </td>
 </tr>
 <tr>
 <td>蛇</td>
 <td>
-<span id="number_12" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>12</span>
-<span id="number_24" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>24</span>
-<span id="number_36" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>36</span>
-<span id="number_48" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>48</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>12</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>24</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>36</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>48</span>
 </td>
 </tr>
 <tr>
 <td>马</td>
 <td>
-<span id="number_11" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>11</span>
-<span id="number_23" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>23</span>
-<span id="number_35" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>35</span>
-<span id="number_47" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>47</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>11</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>23</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>35</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>47</span>
 </td>
 </tr>
 <tr>
 <td>羊</td>
 <td>
-<span id="number_10" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>10</span>
-<span id="number_22" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>22</span>
-<span id="number_34" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>34</span>
-<span id="number_46" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>46</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>10</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>22</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>34</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>46</span>
 </td>
 </tr>
 <tr>
 <td>猴</td>
 <td>
-<span id="number_09" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>09</span>
-<span id="number_21" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>21</span>
-<span id="number_33" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>33</span>
-<span id="number_45" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>45</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>09</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>21</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>33</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>45</span>
 </td>
 </tr>
 <tr>
 <td>鸡</td>
 <td>
-<span id="number_08" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>08</span>
-<span id="number_20" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>20</span>
-<span id="number_32" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>32</span>
-<span id="number_44" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>44</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>08</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>20</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>32</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>44</span>
 </td>
 </tr>
 <tr>
 <td>狗</td>
 <td>
-<span id="number_07" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>07</span>
-<span id="number_19" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>19</span>
-<span id="number_31" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>31</span>
-<span id="number_43" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>43</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>07</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>19</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>31</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>43</span>
 </td>
 </tr>
 <tr>
 <td>猪</td>
 <td>
-<span id="number_06" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span>06</span>
-<span id="number_18" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>18</span>
-<span id="number_30" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span>30</span>
-<span id="number_42" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span>42</span>
+<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>06</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>18</span>
+<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>30</span>
+<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>42</span>
 </td>
 </tr>
 </tbody>
@@ -462,6 +542,13 @@ inputText.value = localStorage.getItem("highlightNumbers") || "";
 inputText.addEventListener("input", function() {
 localStorage.setItem("highlightNumbers", inputText.value);
 });
+
+    // 根据缓存中的设置决定是否执行 countKillNumbers 函数
+    if (localStorage.getItem("showKillNumber") === "true") {
+        countKillNumbers();
+    }else{
+		hideKillNumbers();
+	}
 });
 function formatNumbers() {
 var inputText = document.getElementById("textInput");
@@ -518,7 +605,6 @@ break; // 找到后可以退出循环
 }
 }
 });
-
 // 生成输出字符串
 let output = "";
 for (const zodiac in zodiacNumbers) {
@@ -532,19 +618,16 @@ localStorage.setItem("highlightNumbers", inputText.value);
 var menu = document.getElementById("menuTopRight");
 menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
-
 function formatColor() {
 const redWave = ["01", "02", "07", "08", "12", "13", "18", "19", "23", "24", "29", "30", "34", "35", "40", "45", "46"];
 const blueWave = ["03", "04", "09", "10", "14", "15", "20", "25", "26", "31", "36", "37", "41", "42", "47", "48"];
 const greenWave = ["05", "06", "11", "16", "17", "21", "22", "27", "28", "32", "33", "38", "39", "43", "44", "49"];
 var inputText = document.getElementById("textInput");
 var numberArray = extractAndFormatNumbers(inputText.value);
-
 // 分别存储红波、蓝波和绿波的号码
 const redNumbers = [];
 const blueNumbers = [];
 const greenNumbers = [];
-
 // 根据波色分类号码
 numberArray.forEach(number => {
 if (redWave.includes(number)) {
@@ -555,7 +638,6 @@ blueNumbers.push(number);
 greenNumbers.push(number);
 }
 });
-
 // 生成输出字符串
 let output = "";
 if (redNumbers.length > 0) {
@@ -572,7 +654,6 @@ localStorage.setItem("highlightNumbers", inputText.value);
 var menu = document.getElementById("menuTopRight");
 menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
-
 function FilterDuplicates(){
 var inputText = document.getElementById("textInput");
 var numberArray = extractAndFormatNumbers(inputText.value);
@@ -603,14 +684,12 @@ localStorage.setItem("highlightNumbers", inputText.value);
 var menu = document.getElementById("menuTopRight");
 menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
-
 function FormatDuplicates() {
     var inputText = document.getElementById("textInput").value;
     var numberArray = extractAndFormatNumbers(inputText);
     var uniqueNumbers = [];
     var repeatedNumbers = [];
     var nonRepeatedNumbers = [];
-
     numberArray.forEach(function (number) {
         if (!uniqueNumbers.includes(number)) {
             uniqueNumbers.push(number);
@@ -618,13 +697,11 @@ function FormatDuplicates() {
             repeatedNumbers.push(number);
         }
     });
-
     uniqueNumbers.forEach(function (number) {
         if (!repeatedNumbers.includes(number)) {
             nonRepeatedNumbers.push(number);
         }
     });
-
     // 分组成每五个一行
     function formatNumbers(numbers) {
         const groupedLines = [];
@@ -639,7 +716,6 @@ function FormatDuplicates() {
         });
         return groupedLines.join('\n');
     }
-
     if (repeatedNumbers.length > 0) {
 				let output = "" + formatNumbers(uniqueNumbers) +
                  "\n\n[重号]\n" + formatNumbers(repeatedNumbers) +
@@ -650,8 +726,6 @@ function FormatDuplicates() {
     var menu = document.getElementById("menuTopRight");
     menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
-
-
 function extractAndFormatNumbers(text) {
 text = text.replace(/o|O/g, '0');
 const regex = /\b\d{1,2}\b/g;
@@ -702,6 +776,48 @@ document.getElementById('textInput').value = '';
 localStorage.removeItem('highlightNumbers');
 highlightNumbers();
 }
+// 获取缓存中 `killnumber` 内容的函数
+function getKillNumbersFromCache() {
+    // 假设 `killnumber` 保存在 localStorage 中
+    let cachedData = localStorage.getItem('killnumber');
+    return cachedData ? cachedData : '';
+}
+// 统计每个号码出现次数的函数
+function countKillNumbers() {
+    // 获取缓存中 killnumber 的内容
+    var inputText = getKillNumbersFromCache();
+    var numbers = Array.from({ length: 49 }, (_, i) => (i + 1).toString().padStart(2, '0'));
+    var countMap = {};
+    // 初始化统计对象
+    numbers.forEach(number => {
+        countMap[number] = 0;
+    });
+    // 过滤并统计 1-49 号数的出现次数
+    var filteredNumbers = inputText.match(/\b\d{2}\b/g);
+    if (filteredNumbers) {
+        filteredNumbers.forEach(num => {
+            if (countMap.hasOwnProperty(num)) {
+                countMap[num]++;
+            }
+        });
+    }
+document.querySelectorAll('.number-badge').forEach(el => {el.style.display = 'inline';});
+
+var allSpans = document.querySelectorAll('.ZodiacTable span');
+allSpans.forEach(function (span) {
+var text = span.textContent.trim();
+var number_= String(text.match(/\d{2}$/));
+var number_badge = span.querySelector('.number-badge');
+if (number_badge === null) {
+        return; // 跳过当前 <span> 元素的处理
+ }
+ number_badge.textContent =countMap[number_];
+})
+}
+function hideKillNumbers() {
+    document.querySelectorAll('.number-badge').forEach(el => el.style.display = 'none');
+}
+
 function highlightNumbers() {
 var inputText = document.getElementById("textInput").value;
 var numberArray = extractAndFormatNumbers(inputText);
@@ -724,8 +840,12 @@ clearTotalCount();
 }
 var allSpans = document.querySelectorAll('.ZodiacTable span');
 allSpans.forEach(function (span) {
-var number = span.textContent.trim();
+var text = span.textContent.trim();
+var number= String(text.match(/\d{2}$/));
 var exclamation = span.querySelector('.exclamation');
+if (exclamation === null) {
+        return; // 跳过当前 <span> 元素的处理
+ }
 if (repeatedNumbers.includes(number)) {
 if (exclamation) {
 span.classList.add('exclamation-visible'); // 添加类以显示感叹号
