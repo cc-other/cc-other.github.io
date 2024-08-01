@@ -727,18 +727,44 @@ function FormatDuplicates() {
     menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 function extractAndFormatNumbers(text) {
-text = text.replace(/o|O/g, '0');
-const regex = /\b\d{1,2}\b/g;
-const matches = text.match(regex);
-if (!matches) {
-return [];
+    // 替换所有的 o 和 O 为 0
+    text = text.replace(/o|O/g, '0');
+    
+    // 定义一个正则表达式来匹配1到2位的数字
+    const regex = /\b\d{1,2}\b/g;
+
+    // 按行分割文本
+    const lines = text.split('\n');
+
+    // 存储结果的数组
+    let result = [];
+
+    // 遍历每一行
+    for (let line of lines) {
+        // 检查每一行是否包含“各”，如果有则截断该行
+        const index = line.indexOf('各');
+        if (index !== -1) {
+            line = line.substring(0, index);
+        }
+
+        // 查找所有匹配的数字
+        const matches = line.match(regex);
+
+        if (matches) {
+            // 处理匹配到的数字
+            const filteredAndFormattedMatches = matches
+                .map(num => parseInt(num, 10))       // 转为整数
+                .filter(num => num >= 1 && num <= 49) // 过滤1到49之间的数字
+                .map(num => num < 10 ? '0' + num : num.toString()); // 格式化为两位数
+
+            // 添加到结果数组中
+            result.push(...filteredAndFormattedMatches);
+        }
+    }
+
+    return result;
 }
-const filteredAndFormattedMatches = matches
-.map(num => parseInt(num, 10))
-.filter(num => num >= 1 && num <= 49)
-.map(num => num < 10 ? '0' + num : num.toString());
-return filteredAndFormattedMatches;
-}
+
 function copyToClipboard() {
 const resultTextarea = document.getElementById('textInput');
 resultTextarea.select();
