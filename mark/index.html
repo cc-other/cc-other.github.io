@@ -433,16 +433,16 @@ function generateZodiacNumbers(zodiacList) {
 const adjustedZodiacOrder = adjustAndReverseZodiacOrder(CurrentZodiac);
 const zodiacMap = generateZodiacNumbers(adjustedZodiacOrder);
 
-const redNumbers = ["01", "02", "07", "08", "12", "13", "18", "19", "23", "24", "29", "30", "34", "35", "40", "45", "46"];
-const blueNumbers = ["03", "04", "09", "10", "14", "15", "20", "25", "26", "31", "36", "37", "41", "42", "47", "48"];
-const greenNumbers = ["05", "06", "11", "16", "17", "21", "22", "27", "28", "32", "33", "38", "39", "43", "44", "49"];
+const redWave = ["01", "02", "07", "08", "12", "13", "18", "19", "23", "24", "29", "30", "34", "35", "40", "45", "46"];
+const blueWave = ["03", "04", "09", "10", "14", "15", "20", "25", "26", "31", "36", "37", "41", "42", "47", "48"];
+const greenWave = ["05", "06", "11", "16", "17", "21", "22", "27", "28", "32", "33", "38", "39", "43", "44", "49"];
 
 const getColor = (number) => {
-    if (redNumbers.includes(number))
+    if (redWave.includes(number))
         return 'bg_red';
-    if (blueNumbers.includes(number))
+    if (blueWave.includes(number))
         return 'bg_blue';
-    if (greenNumbers.includes(number))
+    if (greenWave.includes(number))
         return 'bg_green';
     return '';
 };
@@ -466,9 +466,9 @@ for (const zodiac in zodiacMap) {
 }
 var editor_pop = CodeMirror.fromTextArea(document.getElementById("settingkillnumber"), {
     lineNumbers: true, // 显示行号
-    lineWrapping: true,
+    lineWrapping: false,
     styleActiveLine: true, // 高亮当前行
-    matchBrackets: true, // 匹配括号
+    matchBrackets: false, // 匹配括号
     autoCloseBrackets: false, // 自动闭合括号
     mode: "text/plain", // 设置文本模式
     theme: "default", // 设置主题
@@ -487,9 +487,9 @@ editor_pop.on("change", function (cm) {
 });
 var editor_main = CodeMirror.fromTextArea(document.getElementById("textInput"), {
     lineNumbers: true, // 显示行号
-    lineWrapping: true,
+    lineWrapping: false,
     styleActiveLine: true, // 高亮当前行
-    matchBrackets: true, // 匹配括号
+    matchBrackets: false, // 匹配括号
     autoCloseBrackets: false, // 自动闭合括号
     mode: "text/plain", // 设置文本模式
     theme: "default", // 设置主题
@@ -629,9 +629,7 @@ function formatZodiacs() {
     menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 function formatColor() {
-    const redWave = ["01", "02", "07", "08", "12", "13", "18", "19", "23", "24", "29", "30", "34", "35", "40", "45", "46"];
-    const blueWave = ["03", "04", "09", "10", "14", "15", "20", "25", "26", "31", "36", "37", "41", "42", "47", "48"];
-    const greenWave = ["05", "06", "11", "16", "17", "21", "22", "27", "28", "32", "33", "38", "39", "43", "44", "49"];
+
     var inputText = editor_main.getValue();
     var numberArray = extractAndFormatNumbers(inputText);
     // 分别存储红波、蓝波和绿波的号码
