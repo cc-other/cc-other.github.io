@@ -108,7 +108,6 @@ display: flex;
 justify-content: space-between; /* 按钮间距 */
 margin-top: 20px;
 }
-
 .modal-content button {
 flex: 1; /* 平均分配空间 */
 padding: 10px 0;
@@ -144,8 +143,6 @@ color: white;
 background-color: #2196F3; /* 蓝色，关闭 */
 color: white;
 }
-
-
 </style>
 <style>
 /* 页面主体样式 */
@@ -357,7 +354,6 @@ padding: 4px;
 </div>
 </div>
 </div>
-
 <div class="container">
 <textarea id="textInput" placeholder="输入号码..." spellcheck="false"></textarea>
 <div class="button-group">
@@ -377,122 +373,80 @@ padding: 4px;
 <th>号码</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td>鼠</td>
-<td>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>05</span>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>17</span>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>29</span>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>41</span>
-</td>
-</tr>
-<tr>
-<td>牛</td>
-<td>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>04</span>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>16</span>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>28</span>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>40</span>
-</td>
-</tr>
-<tr>
-<td>虎</td>
-<td>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>03</span>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>15</span>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>27</span>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>39</span>
-</td>
-</tr>
-<tr>
-<td>兔</td>
-<td>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>02</span>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>14</span>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>26</span>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>38</span>
-</td>
-</tr>
-<tr>
-<td>龙</td>
-<td>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>01</span>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>13</span>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>25</span>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>37</span>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>49</span>
-</td>
-</tr>
-<tr>
-<td>蛇</td>
-<td>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>12</span>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>24</span>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>36</span>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>48</span>
-</td>
-</tr>
-<tr>
-<td>马</td>
-<td>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>11</span>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>23</span>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>35</span>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>47</span>
-</td>
-</tr>
-<tr>
-<td>羊</td>
-<td>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>10</span>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>22</span>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>34</span>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>46</span>
-</td>
-</tr>
-<tr>
-<td>猴</td>
-<td>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>09</span>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>21</span>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>33</span>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>45</span>
-</td>
-</tr>
-<tr>
-<td>鸡</td>
-<td>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>08</span>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>20</span>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>32</span>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>44</span>
-</td>
-</tr>
-<tr>
-<td>狗</td>
-<td>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>07</span>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>19</span>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>31</span>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>43</span>
-</td>
-</tr>
-<tr>
-<td>猪</td>
-<td>
-<span id="number" class="bg_green"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>06</span>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>18</span>
-<span id="number" class="bg_red"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>30</span>
-<span id="number" class="bg_blue"><span class="highlight-overlay"></span><span class="exclamation"></span><span class="number-badge"></span>42</span>
-</td>
-</tr>
+<tbody  id="ZodiacTbody">
 </tbody>
 </table>
 </div>
 </div>
-
 <script>
+const CurrentZodiac = "龙"; 
+// 定义十二生肖的顺序
+const zodiacOrder = [
+    "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"
+];
+// 根据传入的生肖生成新的排序数组，并将第一位移动到最后，然后反向排序
+function adjustAndReverseZodiacOrder(zodiac) {
+    const index = zodiacOrder.indexOf(zodiac);
+    if (index === -1) {
+        throw new Error(`Unknown zodiac: ${zodiac}`);
+    }
+// 生成新的生肖顺序
+const shiftedZodiac = zodiacOrder.slice(index).concat(zodiacOrder.slice(0, index));
+    // 将第一位元素移到最后一位
+    const adjustedZodiac = shiftedZodiac.slice(1).concat(shiftedZodiac[0]);
+    // 反向排序数组
+    const reversedZodiac = adjustedZodiac.reverse();
+    return reversedZodiac;
+}
+// 根据调整后的生肖顺序生成号码，并将其按原始顺序重新排序
+function generateZodiacNumbers(zodiacList) {
+    const numbers = {};
+    // 第一个生肖有5个号码
+    let currentNumber = 1;
+    numbers[zodiacList[0]] = Array.from({ length: 5 }, (_, i) => (currentNumber + i * 12).toString().padStart(2, '0'));
+   
+    currentNumber = 1;
+    for (let i = 1; i < zodiacList.length; i++) {
+        currentNumber += 1; // 下一个生肖号码起点
+        numbers[zodiacList[i]] = Array.from({ length: 4 }, (_, j) => (currentNumber + j * 12).toString().padStart(2, '0'));
+    }
+    const sortedNumbers = {};
+    zodiacOrder.forEach(zodiac => {
+        if (numbers[zodiac]) {
+            sortedNumbers[zodiac] = numbers[zodiac];
+        }
+    });
+    return sortedNumbers;
+}
+const adjustedZodiacOrder = adjustAndReverseZodiacOrder(CurrentZodiac);
+const zodiacMap = generateZodiacNumbers(adjustedZodiacOrder);
+const redNumbers = ["01", "02", "07", "08", "12", "13", "18", "19", "23", "24", "29", "30", "34", "35", "40", "45", "46"];
+const blueNumbers = ["03", "04", "09", "10", "14", "15", "20", "25", "26", "31", "36", "37", "41", "42", "47", "48"];
+const greenNumbers = ["05", "06", "11", "16", "17", "21", "22", "27", "28", "32", "33", "38", "39", "43", "44", "49"];
+const getColor = (number) => {
+    if (redNumbers.includes(number)) return 'bg_red';
+    if (blueNumbers.includes(number)) return 'bg_blue';
+    if (greenNumbers.includes(number)) return 'bg_green';
+    return '';
+};
+const Tbody = document.getElementById('ZodiacTbody');
+for (const zodiac in zodiacMap) {
+    const row = document.createElement('tr');
+    const cellName = document.createElement('td');
+    cellName.textContent = zodiac;
+    row.appendChild(cellName);
+    const cellNumbers = document.createElement('td');
+    zodiacMap[zodiac].forEach(number => {
+        const spanNumber = document.createElement('span');
+		spanNumber.id ="number";
+        spanNumber.className = getColor(number);
+        spanNumber.innerHTML = `<span class=\"highlight-overlay\"></span><span class=\"exclamation\"></span><span class=\"number-badge\"></span>${number}`;
+        cellNumbers.appendChild(spanNumber);
+		cellNumbers.appendChild(document.createTextNode(' '));
+    });
+    row.appendChild(cellNumbers);
+    Tbody.appendChild(row);
+}
 var editor_pop = CodeMirror.fromTextArea(document.getElementById("settingkillnumber"), {
 lineNumbers: true, // 显示行号
 lineWrapping: true,
@@ -514,7 +468,6 @@ var editorContent = editor_pop.getValue();
 // 将内容保存到缓存
 localStorage.setItem("killnumber", editorContent);
 });
-
 var editor_main = CodeMirror.fromTextArea(document.getElementById("textInput"), {
 lineNumbers: true, // 显示行号
 lineWrapping: true,
@@ -534,7 +487,6 @@ var editorContent = editor_main.getValue();
 // 将内容保存到缓存
 localStorage.setItem("highlightNumbers", editorContent);
 });
-
 //弹窗内容
 function showSettingsModal() {
 document.getElementById("settingModal").style.display = "flex";
@@ -600,7 +552,6 @@ document.addEventListener("DOMContentLoaded", function() {
 const cachedTextInput = localStorage.getItem("highlightNumbers") || "";
 // 更新CodeMirror实例以显示新的内容
 editor_main.setValue(cachedTextInput);
-
 // 根据缓存中的设置决定是否执行 countKillNumbers 函数
 if (localStorage.getItem("showKillNumber") === "true") {
 countKillNumbers();
@@ -631,21 +582,6 @@ var menu = document.getElementById("menuTopRight");
 menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 function formatZodiacs() {
-// 定义生肖对应的号码数组
-const zodiacMap = {
-"鼠": ["05", "17", "29", "41"],
-"牛": ["04", "16", "28", "40"],
-"虎": ["03", "15", "27", "39"],
-"兔": ["02", "14", "26", "38"],
-"龙": ["01", "13", "25", "37", "49"],
-"蛇": ["12", "24", "36", "48"],
-"马": ["11", "23", "35", "47"],
-"羊": ["10", "22", "34", "46"],
-"猴": ["09", "21", "33", "45"],
-"鸡": ["08", "20", "32", "44"],
-"狗": ["07", "19", "31", "43"],
-"猪": ["06", "18", "30", "42"]
-};
 var inputText = editor_main.getValue();
 var numberArray = extractAndFormatNumbers(inputText);
 // 分别存储各生肖的号码
@@ -788,7 +724,6 @@ menu.style.display = menu.style.display === "block" ? "none" : "block";
 function extractAndFormatNumbers(text) {
 // 替换所有的 o 和 O 为 0
 text = text.replace(/o|O/g, '0');
-
 // 定义一个正则表达式来匹配1到2位的数字
 const regex = /\b\d{1,2}\b/g;
 // 按行分割文本
@@ -934,7 +869,7 @@ overlayElement.style.backgroundColor = 'transparent'; // 恢复透明层颜色
 if (overlayElement) {
 overlayElement.style.display = 'block'; // Show overlay
 span.style.fontWeight = 'normal'; // 设置字体为粗体
-overlayElement.style.backgroundColor = 'rgba(245,245,220, 0.8)'; // 设置透明层颜色
+overlayElement.style.backgroundColor = 'rgba(245,245,220, 0.8)'; 
 }
 }
 });
