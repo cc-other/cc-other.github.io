@@ -466,7 +466,7 @@ for (const zodiac in zodiacMap) {
 }
 var editor_pop = CodeMirror.fromTextArea(document.getElementById("settingkillnumber"), {
     lineNumbers: true, // 显示行号
-    lineWrapping: false,
+    lineWrapping: true,
     styleActiveLine: true, // 高亮当前行
     matchBrackets: false, // 匹配括号
     autoCloseBrackets: false, // 自动闭合括号
@@ -487,7 +487,7 @@ editor_pop.on("change", function (cm) {
 });
 var editor_main = CodeMirror.fromTextArea(document.getElementById("textInput"), {
     lineNumbers: true, // 显示行号
-    lineWrapping: false,
+    lineWrapping: true,
     styleActiveLine: true, // 高亮当前行
     matchBrackets: false, // 匹配括号
     autoCloseBrackets: false, // 自动闭合括号
