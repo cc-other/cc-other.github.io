@@ -44,7 +44,7 @@ display: none;
 position: fixed;
 top: 50px; /* 调整为距离顶部的距离 */
 right: 20px; /* 调整为距离右侧的距离 */
-z-index: 1;
+z-index: 10001;
 padding: 12px;
 border-radius: 8px;
 width: 150px;
@@ -398,8 +398,8 @@ function adjustAndReverseZodiacOrder(zodiac) {
     if (index === -1) {
         throw new Error(`Unknown zodiac: ${zodiac}`);
     }
-// 生成新的生肖顺序
-const shiftedZodiac = zodiacOrder.slice(index).concat(zodiacOrder.slice(0, index));
+    // 生成新的生肖顺序
+    const shiftedZodiac = zodiacOrder.slice(index).concat(zodiacOrder.slice(0, index));
     // 将第一位元素移到最后一位
     const adjustedZodiac = shiftedZodiac.slice(1).concat(shiftedZodiac[0]);
     // 反向排序数组
@@ -411,12 +411,16 @@ function generateZodiacNumbers(zodiacList) {
     const numbers = {};
     // 第一个生肖有5个号码
     let currentNumber = 1;
-    numbers[zodiacList[0]] = Array.from({ length: 5 }, (_, i) => (currentNumber + i * 12).toString().padStart(2, '0'));
-   
+    numbers[zodiacList[0]] = Array.from({
+        length: 5
+    }, (_, i) => (currentNumber + i * 12).toString().padStart(2, '0'));
+
     currentNumber = 1;
     for (let i = 1; i < zodiacList.length; i++) {
         currentNumber += 1; // 下一个生肖号码起点
-        numbers[zodiacList[i]] = Array.from({ length: 4 }, (_, j) => (currentNumber + j * 12).toString().padStart(2, '0'));
+        numbers[zodiacList[i]] = Array.from({
+            length: 4
+        }, (_, j) => (currentNumber + j * 12).toString().padStart(2, '0'));
     }
     const sortedNumbers = {};
     zodiacOrder.forEach(zodiac => {
@@ -428,13 +432,18 @@ function generateZodiacNumbers(zodiacList) {
 }
 const adjustedZodiacOrder = adjustAndReverseZodiacOrder(CurrentZodiac);
 const zodiacMap = generateZodiacNumbers(adjustedZodiacOrder);
+
 const redNumbers = ["01", "02", "07", "08", "12", "13", "18", "19", "23", "24", "29", "30", "34", "35", "40", "45", "46"];
 const blueNumbers = ["03", "04", "09", "10", "14", "15", "20", "25", "26", "31", "36", "37", "41", "42", "47", "48"];
 const greenNumbers = ["05", "06", "11", "16", "17", "21", "22", "27", "28", "32", "33", "38", "39", "43", "44", "49"];
+
 const getColor = (number) => {
-    if (redNumbers.includes(number)) return 'bg_red';
-    if (blueNumbers.includes(number)) return 'bg_blue';
-    if (greenNumbers.includes(number)) return 'bg_green';
+    if (redNumbers.includes(number))
+        return 'bg_red';
+    if (blueNumbers.includes(number))
+        return 'bg_blue';
+    if (greenNumbers.includes(number))
+        return 'bg_green';
     return '';
 };
 const Tbody = document.getElementById('ZodiacTbody');
@@ -446,474 +455,483 @@ for (const zodiac in zodiacMap) {
     const cellNumbers = document.createElement('td');
     zodiacMap[zodiac].forEach(number => {
         const spanNumber = document.createElement('span');
-		spanNumber.id ="number";
+        spanNumber.id = "number";
         spanNumber.className = getColor(number);
         spanNumber.innerHTML = `<span class=\"highlight-overlay\"></span><span class=\"exclamation\"></span><span class=\"number-badge\"></span>${number}`;
         cellNumbers.appendChild(spanNumber);
-		cellNumbers.appendChild(document.createTextNode(' '));
+        cellNumbers.appendChild(document.createTextNode(' '));
     });
     row.appendChild(cellNumbers);
     Tbody.appendChild(row);
 }
 var editor_pop = CodeMirror.fromTextArea(document.getElementById("settingkillnumber"), {
-lineNumbers: true, // 显示行号
-lineWrapping: true,
-styleActiveLine: true, // 高亮当前行
-matchBrackets: true, // 匹配括号
-autoCloseBrackets: false, // 自动闭合括号
-mode: "text/plain", // 设置文本模式
-theme: "default", // 设置主题
-scrollbarStyle: "simple" // 设置滚动条样式
+    lineNumbers: true, // 显示行号
+    lineWrapping: true,
+    styleActiveLine: true, // 高亮当前行
+    matchBrackets: true, // 匹配括号
+    autoCloseBrackets: false, // 自动闭合括号
+    mode: "text/plain", // 设置文本模式
+    theme: "default", // 设置主题
+    scrollbarStyle: "simple" // 设置滚动条样式
 });
 editor_pop.setOption("lineNumbers", true); // 设置显示行号
 editor_pop.refresh();
 editor_pop.setSize('100%', '350px');
 // 在textarea输入时，动态更新CodeMirror中的内容
-editor_pop.on("change", function(cm) {
-editor_pop.setOption("lineNumbers", true); // 设置显示行号
-editor_pop.save(); // 保存内容
-var editorContent = editor_pop.getValue();
-// 将内容保存到缓存
-localStorage.setItem("killnumber", editorContent);
+editor_pop.on("change", function (cm) {
+    editor_pop.setOption("lineNumbers", true); // 设置显示行号
+    editor_pop.save(); // 保存内容
+    var editorContent = editor_pop.getValue();
+    // 将内容保存到缓存
+    localStorage.setItem("killnumber", editorContent);
 });
 var editor_main = CodeMirror.fromTextArea(document.getElementById("textInput"), {
-lineNumbers: true, // 显示行号
-lineWrapping: true,
-styleActiveLine: true, // 高亮当前行
-matchBrackets: true, // 匹配括号
-autoCloseBrackets: false, // 自动闭合括号
-mode: "text/plain", // 设置文本模式
-theme: "default", // 设置主题
-scrollbarStyle: "simple" // 设置滚动条样式
+    lineNumbers: true, // 显示行号
+    lineWrapping: true,
+    styleActiveLine: true, // 高亮当前行
+    matchBrackets: true, // 匹配括号
+    autoCloseBrackets: false, // 自动闭合括号
+    mode: "text/plain", // 设置文本模式
+    theme: "default", // 设置主题
+    scrollbarStyle: "simple" // 设置滚动条样式
 });
-editor_main.setSize('calc(100% - 20px)','238px');
+editor_main.setSize('calc(100% - 20px)', '238px');
 // 在textarea输入时，动态更新CodeMirror中的内容
-editor_main.on("change", function(cm) {
-editor_main.setOption("lineNumbers", true); // 设置显示行号
-editor_main.save(); // 保存内容
-var editorContent = editor_main.getValue();
-// 将内容保存到缓存
-localStorage.setItem("highlightNumbers", editorContent);
+editor_main.on("change", function (cm) {
+    editor_main.setOption("lineNumbers", true); // 设置显示行号
+    editor_main.save(); // 保存内容
+    var editorContent = editor_main.getValue();
+    // 将内容保存到缓存
+    localStorage.setItem("highlightNumbers", editorContent);
 });
 //弹窗内容
 function showSettingsModal() {
-document.getElementById("settingModal").style.display = "flex";
-let editorContent = localStorage.getItem("killnumber");
-let lines = editorContent.split('\n').filter(line => line.trim() !== '');
-editor_pop.setValue(lines.join('\n'));
-const checkbox = document.getElementById("showKillNumberCheckbox");
-checkbox.checked = localStorage.getItem("showKillNumber") === "true";
-var menu = document.getElementById("menuTopRight");
-menu.style.display = menu.style.display === "block" ? "none" : "block";
+    document.getElementById("settingModal").style.display = "flex";
+    let editorContent = localStorage.getItem("killnumber");
+    let lines = editorContent.split('\n').filter(line => line.trim() !== '');
+    editor_pop.setValue(lines.join('\n'));
+    const checkbox = document.getElementById("showKillNumberCheckbox");
+    checkbox.checked = localStorage.getItem("showKillNumber") === "true";
+    var menu = document.getElementById("menuTopRight");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 // 关闭弹出窗口
 function closeModal() {
-document.getElementById("settingModal").style.display = "none";
+    document.getElementById("settingModal").style.display = "none";
 }
 // 保存内容到本地存储
 function saveSettings() {
-const content = editor_pop.getValue();
-const checkbox = document.getElementById("showKillNumberCheckbox").checked;
-localStorage.setItem("killnumber", content);
-localStorage.setItem("showKillNumber", checkbox);
-if (checkbox) {
-countKillNumbers();
-}else{
-hideKillNumbers();
-}
-closeModal();
+    const content = editor_pop.getValue();
+    const checkbox = document.getElementById("showKillNumberCheckbox").checked;
+    localStorage.setItem("killnumber", content);
+    localStorage.setItem("showKillNumber", checkbox);
+    if (checkbox) {
+        countKillNumbers();
+    } else {
+        hideKillNumbers();
+    }
+    closeModal();
 }
 // 清空输入框和本地存储
 function clearSettings() {
-editor_pop.setValue("");
-localStorage.removeItem("killnumber");
+    editor_pop.setValue("");
+    localStorage.removeItem("killnumber");
 }
 // 切换右上角菜单的显示状态
 function toggleMenuTopRight() {
-var menuTopRight = document.getElementById("menuTopRight");
-menuTopRight.style.display = menuTopRight.style.display === "block" ? "none" : "block";
+    var menuTopRight = document.getElementById("menuTopRight");
+    menuTopRight.style.display = menuTopRight.style.display === "block" ? "none" : "block";
 }
 // 点击其他地方隐藏右上角菜单
-document.addEventListener("click", function(event) {
-var menuTopRight = document.getElementById("menuTopRight");
-var menuIconTopRight = document.getElementById("menuIconTopRight");
-// 如果点击的不是右上角菜单或浮动图标，则隐藏菜单
-if (!menuTopRight.contains(event.target) && !menuIconTopRight.contains(event.target)) {
-menuTopRight.style.display = "none";
-}
+document.addEventListener("click", function (event) {
+    var menuTopRight = document.getElementById("menuTopRight");
+    var menuIconTopRight = document.getElementById("menuIconTopRight");
+    // 如果点击的不是右上角菜单或浮动图标，则隐藏菜单
+    if (!menuTopRight.contains(event.target) && !menuIconTopRight.contains(event.target)) {
+        menuTopRight.style.display = "none";
+    }
 });
 // 阻止右上角菜单和图标自身点击事件冒泡
-document.getElementById("menuTopRight").addEventListener("click", function(event) {
-event.stopPropagation();
+document.getElementById("menuTopRight").addEventListener("click", function (event) {
+    event.stopPropagation();
 });
-document.getElementById("menuIconTopRight").addEventListener("click", function(event) {
-event.stopPropagation();
+document.getElementById("menuIconTopRight").addEventListener("click", function (event) {
+    event.stopPropagation();
 });
 // 点击菜单项后导航到相应页面
 function navigateTo(url) {
-window.location.href = url;
+    window.location.href = url;
 }
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-// 从缓存中读取内容
-const cachedTextInput = localStorage.getItem("highlightNumbers") || "";
-// 更新CodeMirror实例以显示新的内容
-editor_main.setValue(cachedTextInput);
-// 根据缓存中的设置决定是否执行 countKillNumbers 函数
-if (localStorage.getItem("showKillNumber") === "true") {
-countKillNumbers();
-}else{
-hideKillNumbers();
-}
+
+document.addEventListener("DOMContentLoaded", function () {
+    // 从缓存中读取内容
+    const cachedTextInput = localStorage.getItem("highlightNumbers") || "";
+    // 更新CodeMirror实例以显示新的内容
+    editor_main.setValue(cachedTextInput);
+    // 根据缓存中的设置决定是否执行 countKillNumbers 函数
+    if (localStorage.getItem("showKillNumber") === "true") {
+        countKillNumbers();
+    } else {
+        hideKillNumbers();
+    }
 });
 function formatNumbers() {
-var inputText = editor_main.getValue();
-var numberArray = extractAndFormatNumbers(inputText);
-// 分组成每十个一行
-const groupedLines = [];
-let line = [];
-numberArray.forEach((number, index) => {
-line.push(number);
-// 每十个一组，或者到达数组末尾时结束当前行
-if (line.length === 5 || index === numberArray.length - 1) {
-groupedLines.push(line.join(','));
-line = []; // 清空当前行
-}
-});
-// 生成输出字符串
-let output = groupedLines.join('\n');
-// 显示结果
-editor_main.setValue(output);
-localStorage.setItem("highlightNumbers", output);
-var menu = document.getElementById("menuTopRight");
-menu.style.display = menu.style.display === "block" ? "none" : "block";
+    var inputText = editor_main.getValue();
+    var numberArray = extractAndFormatNumbers(inputText);
+    // 分组成每十个一行
+    const groupedLines = [];
+    let line = [];
+    numberArray.forEach((number, index) => {
+        line.push(number);
+        // 每十个一组，或者到达数组末尾时结束当前行
+        if (line.length === 5 || index === numberArray.length - 1) {
+            groupedLines.push(line.join(','));
+            line = []; // 清空当前行
+        }
+    });
+    // 生成输出字符串
+    let output = groupedLines.join('\n');
+    // 显示结果
+    editor_main.setValue(output);
+    localStorage.setItem("highlightNumbers", output);
+    var menu = document.getElementById("menuTopRight");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 function formatZodiacs() {
-var inputText = editor_main.getValue();
-var numberArray = extractAndFormatNumbers(inputText);
-// 分别存储各生肖的号码
-const zodiacNumbers = {};
-// 根据生肖分类号码
-numberArray.forEach(number => {
-// 找到该号码属于哪个生肖
-for (const zodiac in zodiacMap) {
-if (zodiacMap[zodiac].includes(number)) {
-if (!zodiacNumbers[zodiac]) {
-zodiacNumbers[zodiac] = [];
-}
-zodiacNumbers[zodiac].push(number);
-break; // 找到后可以退出循环
-}
-}
-});
-// 生成输出字符串
-let output = "";
-for (const zodiac in zodiacNumbers) {
-if (zodiacNumbers[zodiac].length > 0) {
-output += `${zodiac}: ${zodiacNumbers[zodiac].join(',')}\n`;
-}
-}
-// 显示结果
-editor_main.setValue(output);
-localStorage.setItem("highlightNumbers", output);
-var menu = document.getElementById("menuTopRight");
-menu.style.display = menu.style.display === "block" ? "none" : "block";
+    var inputText = editor_main.getValue();
+    var numberArray = extractAndFormatNumbers(inputText);
+    // 分别存储各生肖的号码
+    const zodiacNumbers = {};
+    // 根据生肖分类号码
+    numberArray.forEach(number => {
+        // 找到该号码属于哪个生肖
+        for (const zodiac in zodiacMap) {
+            if (zodiacMap[zodiac].includes(number)) {
+                if (!zodiacNumbers[zodiac]) {
+                    zodiacNumbers[zodiac] = [];
+                }
+                zodiacNumbers[zodiac].push(number);
+                break; // 找到后可以退出循环
+            }
+        }
+    });
+    // 生成输出字符串
+    let output = "";
+    for (const zodiac in zodiacNumbers) {
+        if (zodiacNumbers[zodiac].length > 0) {
+            output += `${zodiac}: ${zodiacNumbers[zodiac].join(',')}\n`;
+        }
+    }
+    // 显示结果
+    editor_main.setValue(output);
+    localStorage.setItem("highlightNumbers", output);
+    var menu = document.getElementById("menuTopRight");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 function formatColor() {
-const redWave = ["01", "02", "07", "08", "12", "13", "18", "19", "23", "24", "29", "30", "34", "35", "40", "45", "46"];
-const blueWave = ["03", "04", "09", "10", "14", "15", "20", "25", "26", "31", "36", "37", "41", "42", "47", "48"];
-const greenWave = ["05", "06", "11", "16", "17", "21", "22", "27", "28", "32", "33", "38", "39", "43", "44", "49"];
-var inputText = editor_main.getValue();
-var numberArray = extractAndFormatNumbers(inputText);
-// 分别存储红波、蓝波和绿波的号码
-const redNumbers = [];
-const blueNumbers = [];
-const greenNumbers = [];
-// 根据波色分类号码
-numberArray.forEach(number => {
-if (redWave.includes(number)) {
-redNumbers.push(number);
-} else if (blueWave.includes(number)) {
-blueNumbers.push(number);
-} else if (greenWave.includes(number)) {
-greenNumbers.push(number);
+    const redWave = ["01", "02", "07", "08", "12", "13", "18", "19", "23", "24", "29", "30", "34", "35", "40", "45", "46"];
+    const blueWave = ["03", "04", "09", "10", "14", "15", "20", "25", "26", "31", "36", "37", "41", "42", "47", "48"];
+    const greenWave = ["05", "06", "11", "16", "17", "21", "22", "27", "28", "32", "33", "38", "39", "43", "44", "49"];
+    var inputText = editor_main.getValue();
+    var numberArray = extractAndFormatNumbers(inputText);
+    // 分别存储红波、蓝波和绿波的号码
+    const redNumbers = [];
+    const blueNumbers = [];
+    const greenNumbers = [];
+    // 根据波色分类号码
+    numberArray.forEach(number => {
+        if (redWave.includes(number)) {
+            redNumbers.push(number);
+        } else if (blueWave.includes(number)) {
+            blueNumbers.push(number);
+        } else if (greenWave.includes(number)) {
+            greenNumbers.push(number);
+        }
+    });
+    // 生成输出字符串
+    let output = "";
+    if (redNumbers.length > 0) {
+        output += "红: " + redNumbers.join(',') + "\n";
+    }
+    if (blueNumbers.length > 0) {
+        output += "蓝: " + blueNumbers.join(',') + "\n";
+    }
+    if (greenNumbers.length > 0) {
+        output += "绿: " + greenNumbers.join(',');
+    }
+    editor_main.setValue(output);
+    localStorage.setItem("highlightNumbers", output);
+    var menu = document.getElementById("menuTopRight");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
-});
-// 生成输出字符串
-let output = "";
-if (redNumbers.length > 0) {
-output += "红: " + redNumbers.join(',') + "\n";
-}
-if (blueNumbers.length > 0) {
-output += "蓝: " + blueNumbers.join(',') + "\n";
-}
-if (greenNumbers.length > 0) {
-output += "绿: " + greenNumbers.join(',');
-}
-editor_main.setValue(output);
-localStorage.setItem("highlightNumbers", output);
-var menu = document.getElementById("menuTopRight");
-menu.style.display = menu.style.display === "block" ? "none" : "block";
-}
-function FilterDuplicates(){
-var inputText = editor_main.getValue();
-var numberArray = extractAndFormatNumbers(inputText);
-var repeatedNumbers = [];
-numberArray.forEach(function (number) {
-if (!repeatedNumbers.includes(number)) {
-repeatedNumbers.push(number);
-}
-});
-if (repeatedNumbers.length > 0) {
-}
-// 分组成每十个一行
-const groupedLines = [];
-let line = [];
-repeatedNumbers.forEach((number, index) => {
-line.push(number);
-// 每十个一组，或者到达数组末尾时结束当前行
-if (line.length === 5 || index === repeatedNumbers.length - 1) {
-groupedLines.push(line.join(','));
-line = []; // 清空当前行
-}
-});
-// 生成输出字符串
-let output = groupedLines.join('\n');
-// 显示结果
-editor_main.setValue(output);
-localStorage.setItem("highlightNumbers", output);
-var menu = document.getElementById("menuTopRight");
-menu.style.display = menu.style.display === "block" ? "none" : "block";
+function FilterDuplicates() {
+    var inputText = editor_main.getValue();
+    var numberArray = extractAndFormatNumbers(inputText);
+    var repeatedNumbers = [];
+    numberArray.forEach(function (number) {
+        if (!repeatedNumbers.includes(number)) {
+            repeatedNumbers.push(number);
+        }
+    });
+    if (repeatedNumbers.length > 0) {}
+    // 分组成每十个一行
+    const groupedLines = [];
+    let line = [];
+    repeatedNumbers.forEach((number, index) => {
+        line.push(number);
+        // 每十个一组，或者到达数组末尾时结束当前行
+        if (line.length === 5 || index === repeatedNumbers.length - 1) {
+            groupedLines.push(line.join(','));
+            line = []; // 清空当前行
+        }
+    });
+    // 生成输出字符串
+    let output = groupedLines.join('\n');
+    // 显示结果
+    editor_main.setValue(output);
+    localStorage.setItem("highlightNumbers", output);
+    var menu = document.getElementById("menuTopRight");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 function FormatDuplicates() {
-var inputText = editor_main.getValue();
-var numberArray = extractAndFormatNumbers(inputText);
-var uniqueNumbers = [];
-var repeatedNumbers = [];
-var nonRepeatedNumbers = [];
-numberArray.forEach(function (number) {
-if (!uniqueNumbers.includes(number)) {
-uniqueNumbers.push(number);
-} else if (!repeatedNumbers.includes(number)) {
-repeatedNumbers.push(number);
+    var inputText = editor_main.getValue();
+    var numberArray = extractAndFormatNumbers(inputText);
+    var uniqueNumbers = [];
+    var repeatedNumbers = [];
+    var nonRepeatedNumbers = [];
+    numberArray.forEach(function (number) {
+        if (!uniqueNumbers.includes(number)) {
+            uniqueNumbers.push(number);
+        } else if (!repeatedNumbers.includes(number)) {
+            repeatedNumbers.push(number);
+        }
+    });
+    uniqueNumbers.forEach(function (number) {
+        if (!repeatedNumbers.includes(number)) {
+            nonRepeatedNumbers.push(number);
+        }
+    });
+
+    if (repeatedNumbers.length > 0) {
+        let output = "" + formatNumbers(uniqueNumbers) +
+            "\n\n[重号]\n" + formatNumbers(repeatedNumbers) +
+            "\n\n[未重号]\n" + formatNumbers(nonRepeatedNumbers);
+        // 显示结果
+        document.getElementById("textInput").value = output;
+        editor_main.setValue(output);
+    }
+    var menu = document.getElementById("menuTopRight");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
-});
-uniqueNumbers.forEach(function (number) {
-if (!repeatedNumbers.includes(number)) {
-nonRepeatedNumbers.push(number);
-}
-});
-// 分组成每五个一行
-function formatNumbers(numbers) {
-const groupedLines = [];
-let line = [];
-numbers.forEach((number, index) => {
-line.push(number);
-// 每五个一组，或者到达数组末尾时结束当前行
-if (line.length === 5 || index === numbers.length - 1) {
-groupedLines.push(line.join(','));
-line = []; // 清空当前行
-}
-});
-return groupedLines.join('\n');
-}
-if (repeatedNumbers.length > 0) {
-let output = "" + formatNumbers(uniqueNumbers) +
-"\n\n[重号]\n" + formatNumbers(repeatedNumbers) +
-"\n\n[未重号]\n" + formatNumbers(nonRepeatedNumbers);
-// 显示结果
-document.getElementById("textInput").value = output;
-editor_main.setValue(output);
-}
-var menu = document.getElementById("menuTopRight");
-menu.style.display = menu.style.display === "block" ? "none" : "block";
-}
+
+    // 分组成每五个一行
+    function formatNumbers(numbers) {
+        const groupedLines = [];
+        let line = [];
+        numbers.forEach((number, index) => {
+            line.push(number);
+            // 每五个一组，或者到达数组末尾时结束当前行
+            if (line.length === 5 || index === numbers.length - 1) {
+                groupedLines.push(line.join(','));
+                line = []; // 清空当前行
+            }
+        });
+        return groupedLines.join('\n');
+    }
+
 function extractAndFormatNumbers(text) {
-// 替换所有的 o 和 O 为 0
-text = text.replace(/o|O/g, '0');
-// 定义一个正则表达式来匹配1到2位的数字
-const regex = /\b\d{1,2}\b/g;
-// 按行分割文本
-const lines = text.split('\n');
-// 存储结果的数组
-let result = [];
-// 遍历每一行
-for (let line of lines) {
-// 检查每一行是否包含“各”，如果有则截断该行
-const index = line.indexOf('各');
-if (index !== -1) {
-line = line.substring(0, index);
+    // 替换所有的 o 和 O 为 0
+    text = text.replace(/o|O/g, '0');
+    // 定义一个正则表达式来匹配1到2位的数字
+    const regex = /\b\d{1,2}\b/g;
+    // 按行分割文本
+    const lines = text.split('\n');
+    // 存储结果的数组
+    let result = [];
+    // 遍历每一行
+    for (let line of lines) {
+        // 检查每一行是否包含“各”，如果有则截断该行
+        const index = line.indexOf('各');
+        if (index !== -1) {
+            line = line.substring(0, index);
+        }
+        // 查找所有匹配的数字
+        const matches = line.match(regex);
+        if (matches) {
+            // 处理匹配到的数字
+            const filteredAndFormattedMatches = matches
+                .map(num => parseInt(num, 10)) // 转为整数
+                .filter(num => num >= 1 && num <= 49) // 过滤1到49之间的数字
+                .map(num => num < 10 ? '0' + num : num.toString()); // 格式化为两位数
+            // 添加到结果数组中
+            result.push(...filteredAndFormattedMatches);
+        }
+    }
+    return result;
 }
-// 查找所有匹配的数字
-const matches = line.match(regex);
-if (matches) {
-// 处理匹配到的数字
-const filteredAndFormattedMatches = matches
-.map(num => parseInt(num, 10))       // 转为整数
-.filter(num => num >= 1 && num <= 49) // 过滤1到49之间的数字
-.map(num => num < 10 ? '0' + num : num.toString()); // 格式化为两位数
-// 添加到结果数组中
-result.push(...filteredAndFormattedMatches);
-}
-}
-return result;
-}
+
 function copyToClipboard() {
-const resultTextarea = editor_main.getValue();
-copyTextToClipboard(resultTextarea);
+    const resultTextarea = editor_main.getValue();
+    copyTextToClipboard(resultTextarea);
 }
 function clearTotalCount() {
-const totalCountDiv = document.getElementById('totalCount');
-totalCountDiv.innerText = `计数: 0 号码`;
+    const totalCountDiv = document.getElementById('totalCount');
+    totalCountDiv.innerText = `计数: 0 号码`;
 }
-function displayTotalCount(count,nCount) {
-const totalCountDiv = document.getElementById('totalCount');
-var stringCount;
-if(nCount>0){
-stringCount = `计数/重复: ${count}/${nCount} 号码`;
-}else{
-stringCount= `计数: ${count} 号码`;
-}
-totalCountDiv.innerText =stringCount;
+function displayTotalCount(count, nCount) {
+    const totalCountDiv = document.getElementById('totalCount');
+    var stringCount;
+    if (nCount > 0) {
+        stringCount = `计数/重复: ${count}/${nCount} 号码`;
+    } else {
+        stringCount = `计数: ${count} 号码`;
+    }
+    totalCountDiv.innerText = stringCount;
 }
 function copyResult() {
-var resultBox = document.getElementById("resultBox");
-resultBox.focus();
-document.execCommand("selectAll");
-document.execCommand("copy");
-alert("已复制");
+    var resultBox = document.getElementById("resultBox");
+    resultBox.focus();
+    document.execCommand("selectAll");
+    document.execCommand("copy");
+    alert("已复制");
 }
 function clearCount() {
-editor_main.setValue("");
-localStorage.removeItem('highlightNumbers');
-highlightNumbers();
+    editor_main.setValue("");
+    localStorage.removeItem('highlightNumbers');
+    highlightNumbers();
 }
 // 获取缓存中 `killnumber` 内容的函数
 function getKillNumbersFromCache() {
-// 假设 `killnumber` 保存在 localStorage 中
-let cachedData = localStorage.getItem('killnumber');
-return cachedData ? cachedData : '';
+    // 假设 `killnumber` 保存在 localStorage 中
+    let cachedData = localStorage.getItem('killnumber');
+    return cachedData ? cachedData : '';
 }
 // 统计每个号码出现次数的函数
 function countKillNumbers() {
-// 获取缓存中 killnumber 的内容
-var inputText = getKillNumbersFromCache();
-var numbers = Array.from({ length: 49 }, (_, i) => (i + 1).toString().padStart(2, '0'));
-var countMap = {};
-// 初始化统计对象
-numbers.forEach(number => {
-countMap[number] = 0;
-});
-// 过滤并统计 1-49 号数的出现次数
-var filteredNumbers = inputText.match(/\b\d{2}\b/g);
-if (filteredNumbers) {
-filteredNumbers.forEach(num => {
-if (countMap.hasOwnProperty(num)) {
-countMap[num]++;
+    // 获取缓存中 killnumber 的内容
+    var inputText = getKillNumbersFromCache();
+    var numbers = Array.from({
+        length: 49
+    }, (_, i) => (i + 1).toString().padStart(2, '0'));
+    var countMap = {};
+    // 初始化统计对象
+    numbers.forEach(number => {
+        countMap[number] = 0;
+    });
+    // 过滤并统计 1-49 号数的出现次数
+    var filteredNumbers = inputText.match(/\b\d{2}\b/g);
+    if (filteredNumbers) {
+        filteredNumbers.forEach(num => {
+            if (countMap.hasOwnProperty(num)) {
+                countMap[num]++;
+            }
+        });
+    }
+    document.querySelectorAll('.number-badge').forEach(el => {
+        el.style.display = 'inline';
+    });
+    var allSpans = document.querySelectorAll('.ZodiacTable span');
+    allSpans.forEach(function (span) {
+        var text = span.textContent.trim();
+        var number_ = String(text.match(/\d{2}$/));
+        var number_badge = span.querySelector('.number-badge');
+        if (number_badge === null) {
+            return; 
+        }
+        number_badge.textContent = countMap[number_];
+    })
 }
-});
-}
-document.querySelectorAll('.number-badge').forEach(el => {el.style.display = 'inline';});
-var allSpans = document.querySelectorAll('.ZodiacTable span');
-allSpans.forEach(function (span) {
-var text = span.textContent.trim();
-var number_= String(text.match(/\d{2}$/));
-var number_badge = span.querySelector('.number-badge');
-if (number_badge === null) {
-return; // 跳过当前 <span> 元素的处理
-}
-number_badge.textContent =countMap[number_];
-})
-}
+
 function hideKillNumbers() {
-document.querySelectorAll('.number-badge').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.number-badge').forEach(el => el.style.display = 'none');
 }
+
 function highlightNumbers() {
-var inputText = editor_main.getValue();
-var numberArray = extractAndFormatNumbers(inputText);
-var repeatedNumbers = [];
-var numberCount = {};
-numberArray.forEach(function (number) {
-if (numberCount[number]) {
-numberCount[number]++;
-if (!repeatedNumbers.includes(number)) {
-repeatedNumbers.push(number);
-}
-} else {
-numberCount[number] = 1;
-}
-});
-if (numberArray.length > 0) {
-displayTotalCount(numberArray.length, repeatedNumbers.length);
-} else {
-clearTotalCount();
-}
-var allSpans = document.querySelectorAll('.ZodiacTable span');
-allSpans.forEach(function (span) {
-var text = span.textContent.trim();
-var number= String(text.match(/\d{2}$/));
-var exclamation = span.querySelector('.exclamation');
-if (exclamation === null) {
-return; // 跳过当前 <span> 元素的处理
-}
-if (repeatedNumbers.includes(number)) {
-if (exclamation) {
-span.classList.add('exclamation-visible'); // 添加类以显示感叹号
-}
-} else {
-if (exclamation) {
-span.classList.remove('exclamation-visible'); // 移除类以隐藏感叹号
-}
-}
-var overlayElement = span.querySelector('.highlight-overlay');
-if (numberArray.includes(number)) {
-if (overlayElement) {
-overlayElement.style.display = 'none'; // Hide overlay
-span.style.fontWeight = 'bold'; // 恢复字体为普通
-overlayElement.style.backgroundColor = 'transparent'; // 恢复透明层颜色
-}
-} else {
-if (overlayElement) {
-overlayElement.style.display = 'block'; // Show overlay
-span.style.fontWeight = 'normal'; // 设置字体为粗体
-overlayElement.style.backgroundColor = 'rgba(245,245,220, 0.8)'; 
-}
-}
-});
-updateButtonCount('copyGreenButton','green');
-updateButtonCount('copyRedButton','red');
-updateButtonCount('copyBlueButton','blue');
+    var inputText = editor_main.getValue();
+    var numberArray = extractAndFormatNumbers(inputText);
+    var repeatedNumbers = [];
+    var numberCount = {};
+    numberArray.forEach(function (number) {
+        if (numberCount[number]) {
+            numberCount[number]++;
+            if (!repeatedNumbers.includes(number)) {
+                repeatedNumbers.push(number);
+            }
+        } else {
+            numberCount[number] = 1;
+        }
+    });
+    if (numberArray.length > 0) {
+        displayTotalCount(numberArray.length, repeatedNumbers.length);
+    } else {
+        clearTotalCount();
+    }
+    var allSpans = document.querySelectorAll('.ZodiacTable span');
+    allSpans.forEach(function (span) {
+        var text = span.textContent.trim();
+        var number = String(text.match(/\d{2}$/));
+        var exclamation = span.querySelector('.exclamation');
+        if (exclamation === null) {
+            return; // 跳过当前 <span> 元素的处理
+        }
+        if (repeatedNumbers.includes(number)) {
+            if (exclamation) {
+                span.classList.add('exclamation-visible'); // 添加类以显示感叹号
+            }
+        } else {
+            if (exclamation) {
+                span.classList.remove('exclamation-visible'); // 移除类以隐藏感叹号
+            }
+        }
+        var overlayElement = span.querySelector('.highlight-overlay');
+        if (numberArray.includes(number)) {
+            if (overlayElement) {
+                overlayElement.style.display = 'none'; // Hide overlay
+                span.style.fontWeight = 'bold'; // 恢复字体为普通
+                overlayElement.style.backgroundColor = 'transparent'; // 恢复透明层颜色
+            }
+        } else {
+            if (overlayElement) {
+                overlayElement.style.display = 'block'; // Show overlay
+                span.style.fontWeight = 'normal'; // 设置字体为粗体
+                overlayElement.style.backgroundColor = 'rgba(245,245,220, 0.8)';
+            }
+        }
+    });
+    updateButtonCount('copyGreenButton', 'green');
+    updateButtonCount('copyRedButton', 'red');
+    updateButtonCount('copyBlueButton', 'blue');
 }
 function updateButtonCount(buttonId, color) {
-let extractedNumbers = extractHighlightedNumbers(color);
-let count = extractedNumbers ? extractedNumbers.split(',').length : 0;
-let button = document.getElementById(buttonId);
-button.textContent = button.textContent.split(' ')[0] + ` (${count})`;
+    let extractedNumbers = extractHighlightedNumbers(color);
+    let count = extractedNumbers ? extractedNumbers.split(',').length : 0;
+    let button = document.getElementById(buttonId);
+    button.textContent = button.textContent.split(' ')[0] + ` (${count})`;
 }
 function extractHighlightedNumbers(color) {
-let allNumberElements = document.querySelectorAll(`.bg_${color}`);
-let extractedNumbers = [];
-allNumberElements.forEach(element => {
-if (element.style.fontWeight === 'bold') {
-extractedNumbers.push(element.textContent.trim());
-}
-});
-return extractedNumbers.join(',');
+    let allNumberElements = document.querySelectorAll(`.bg_${color}`);
+    let extractedNumbers = [];
+    allNumberElements.forEach(element => {
+        if (element.style.fontWeight === 'bold') {
+            extractedNumbers.push(element.textContent.trim());
+        }
+    });
+    return extractedNumbers.join(',');
 }
 function copyTextToClipboard(text) {
-const tempTextArea = document.createElement('textarea');
-tempTextArea.value = text;
-document.body.appendChild(tempTextArea);
-tempTextArea.select();
-document.execCommand('copy');
-document.body.removeChild(tempTextArea);
-alert('已复制到剪贴板');
+    const tempTextArea = document.createElement('textarea');
+    tempTextArea.value = text;
+    document.body.appendChild(tempTextArea);
+    tempTextArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempTextArea);
+    alert('已复制到剪贴板');
 }
 function extractAndCopyColoredNumbers(color) {
-const extractedNumbers = extractHighlightedNumbers(color);
-copyTextToClipboard(extractedNumbers);
+    const extractedNumbers = extractHighlightedNumbers(color);
+    copyTextToClipboard(extractedNumbers);
 }
+
 </script>
 </body>
 </html>
