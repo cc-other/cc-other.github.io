@@ -379,11 +379,19 @@ padding: 4px;
 </div>
 </div>
 <script>
-const CurrentZodiac = "龙"; 
 // 定义十二生肖的顺序
 const zodiacOrder = [
     "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"
 ];
+function getChineseZodiac(year) {
+    const startYear = 1900; // 1900年为鼠年
+    const index = (year - startYear) % 12;
+    return zodiacOrder[index < 0 ? index + 12 : index]; // 处理负数情况
+}
+const currentYear = new Date().getFullYear();
+//获取当前年份的生肖属性
+const CurrentZodiac = getChineseZodiac(currentYear);
+
 // 根据传入的生肖生成新的排序数组，并将第一位移动到最后，然后反向排序
 function adjustAndReverseZodiacOrder(zodiac) {
     const index = zodiacOrder.indexOf(zodiac);
