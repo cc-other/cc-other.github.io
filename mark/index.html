@@ -711,19 +711,6 @@ function FormatDuplicates() {
             nonRepeatedNumbers.push(number);
         }
     });
-
-    if (repeatedNumbers.length > 0) {
-        let output = "" + formatNumbers(uniqueNumbers) +
-            "\n\n[重号]\n" + formatNumbers(repeatedNumbers) +
-            "\n\n[未重号]\n" + formatNumbers(nonRepeatedNumbers);
-        // 显示结果
-        document.getElementById("textInput").value = output;
-        editor_main.setValue(output);
-    }
-    var menu = document.getElementById("menuTopRight");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
-}
-
     // 分组成每五个一行
     function formatNumbers(numbers) {
         const groupedLines = [];
@@ -738,7 +725,17 @@ function FormatDuplicates() {
         });
         return groupedLines.join('\n');
     }
+    if (repeatedNumbers.length > 0) {
+        let output = "" + formatNumbers(uniqueNumbers) +
+            "\n\n[重号]\n" + formatNumbers(repeatedNumbers) +
+            "\n\n[未重号]\n" + formatNumbers(nonRepeatedNumbers);
+        // 显示结果
 
+        editor_main.setValue(output);
+    }
+    var menu = document.getElementById("menuTopRight");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
 function extractAndFormatNumbers(text) {
     // 替换所有的 o 和 O 为 0
     text = text.replace(/o|O/g, '0');
