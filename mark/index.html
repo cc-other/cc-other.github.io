@@ -345,7 +345,7 @@ justify-content: space-between; /* 两侧对齐 */
 width:calc(100% - 20px);
 }
 .left-column, .right-column {
-width: 45%; /* 调整宽度以适应需要 */
+//width: 45%; /* 调整宽度以适应需要 */
 }
 .left-column {
 text-align: left;
@@ -363,24 +363,54 @@ background-color: #ffffff; /* 确保背景为白色 */
 border-radius: 8px; /* 圆角 */
 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加轻微阴影 */
 }
-/* 文字和复选框的标签 */
-.custom-checkbox {
-display: flex;
-align-items: center;
-cursor: pointer;
-font-size: 16px;
-margin-right: 20px; /* 添加间距避免重叠 */
-user-select: none; /* 防止文本选择 */
-color: #333; /* 文字颜色 */
-font-family: Arial, sans-serif; /* 字体 */
-}
-.custom-checkbox input {
-position: absolute;
-opacity: 0;
-cursor: pointer;
-height: 0;
-width: 0;
-}
+
+       .custom-checkbox {
+           // display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .custom-checkbox input[type="checkbox"] {
+            display: none; /* 隐藏默认复选框 */
+        }
+
+        .checkbox-button {
+            position: relative;
+            padding: 0px 20px; /* 增加右侧内边距，以确保文本不会遮挡勾选标记 */
+            background-color: #008080;
+            color: white;
+            border: 1px solid #008080;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+            text-align: center;
+            overflow: hidden; /* 确保伪元素不会超出按钮边界 */
+        }
+
+        .checkbox-button::before {
+            content: '';
+            position: absolute;
+            left: 3px; /* 调整位置，以避免与文本重叠 */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            border: 2px solid white;
+            border-radius: 2px;
+            background-color: transparent;
+        }
+        .custom-checkbox input[type="checkbox"]:checked + .checkbox-button {
+            background-color: #d11e58;
+            border-color: #d11e58;
+        }
+        .custom-checkbox input[type="checkbox"]:checked + .checkbox-button::before {
+            content: '✓';
+            color: #ffffff;
+            text-align: center;
+            line-height: 15px;
+            font-weight: bold;
+        }
 </style>
 </head>
 <body>
@@ -422,8 +452,14 @@ width: 0;
 <div id="totalCount" style="margin-bottom: 3px;">计数: </div>
 </div>
 <div class="right-column">
-<label><input type="checkbox" id="showKillNumberCheckbox" onchange="toggleFeature('killNumber')">统计</label>
-<label><input type="checkbox" id="showWuxingCheckbox" onchange="toggleFeature('wuxing')">五行</label>
+            <label class="custom-checkbox">
+                <input type="checkbox" id="showKillNumberCheckbox" onchange="toggleFeature('killNumber')">
+                <span class="checkbox-button">统计</span>
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" id="showWuxingCheckbox" onchange="toggleFeature('wuxing')">
+                <span class="checkbox-button">五行</span>
+            </label>
 </div>
 </div>
 </div>
@@ -452,8 +488,7 @@ return'bg_blue';if(greenWave.includes(number))
 return'bg_green';return'';};const Tbody=document.getElementById('ZodiacTbody');for(const zodiac in zodiacMap){const row=document.createElement('tr');const cellName=document.createElement('td');cellName.textContent=zodiac;row.appendChild(cellName);const cellNumbers=document.createElement('td');zodiacMap[zodiac].forEach(number=>{const spanNumber=document.createElement('span');spanNumber.id="number";spanNumber.className=getColor(number);spanNumber.innerHTML=`<span class=\"highlight-overlay\"></span><span class=\"exclamation\"></span><span class=\"number-wuxing\"></span><span class=\"number-badge\"></span>${number}`;cellNumbers.appendChild(spanNumber);cellNumbers.appendChild(document.createTextNode(' '));});row.appendChild(cellNumbers);Tbody.appendChild(row);}
 var editor_pop=CodeMirror.fromTextArea(document.getElementById("settingkillnumber"),{lineNumbers:true,lineWrapping:true,styleActiveLine:true,matchBrackets:false,autoCloseBrackets:false,mode:"text/plain",theme:"default",scrollbarStyle:"simple"});editor_pop.setOption("lineNumbers",true);editor_pop.refresh();editor_pop.setSize('100%','350px');editor_pop.on("change",function(cm){editor_pop.setOption("lineNumbers",true);editor_pop.save();var editorContent=editor_pop.getValue();localStorage.setItem("killnumber",editorContent);});var editor_main=CodeMirror.fromTextArea(document.getElementById("textInput"),{lineNumbers:true,lineWrapping:true,styleActiveLine:true,matchBrackets:false,autoCloseBrackets:false,mode:"text/plain",theme:"default",scrollbarStyle:"simple"});editor_main.setSize('calc(100% - 20px)','238px');editor_main.on("change",function(cm){editor_main.setOption("lineNumbers",true);editor_main.save();var editorContent=editor_main.getValue();localStorage.setItem("highlightNumbers",editorContent);});function showSettingsModal(){document.getElementById("settingModal").style.display="flex";let editorContent=localStorage.getItem("killnumber");let lines=editorContent.split('\n').filter(line=>line.trim()!=='');editor_pop.setValue(lines.join('\n'));var menu=document.getElementById("menuTopRight");menu.style.display=menu.style.display==="block"?"none":"block";}
 function closeModal(){document.getElementById("settingModal").style.display="none";}
-function saveSettings(){const content=editor_pop.getValue();localStorage.setItem("killnumber",content);closeModal();}
-function clearSettings(){editor_pop.setValue("");localStorage.removeItem("killnumber");}
+function saveSettings(){const content=editor_pop.getValue();localStorage.setItem("killnumber",content);const isKillNumberChecked=document.getElementById('showKillNumberCheckbox').checked;if(isKillNumberChecked){countKillNumbers();}closeModal();}function clearSettings(){editor_pop.setValue("");localStorage.removeItem("killnumber");}
 function toggleMenuTopRight(){var menuTopRight=document.getElementById("menuTopRight");menuTopRight.style.display=menuTopRight.style.display==="block"?"none":"block";}
 document.addEventListener("click",function(event){var menuTopRight=document.getElementById("menuTopRight");var menuIconTopRight=document.getElementById("menuIconTopRight");if(!menuTopRight.contains(event.target)&&!menuIconTopRight.contains(event.target)){menuTopRight.style.display="none";}});document.getElementById("menuTopRight").addEventListener("click",function(event){event.stopPropagation();});document.getElementById("menuIconTopRight").addEventListener("click",function(event){event.stopPropagation();});function navigateTo(url){window.location.href=url;}
 function toggleFeature(feature){const isKillNumberChecked=document.getElementById('showKillNumberCheckbox').checked;const isWuxingChecked=document.getElementById('showWuxingCheckbox').checked;if(feature==='killNumber'){localStorage.setItem("showKillNumber",isKillNumberChecked);if(isKillNumberChecked){countKillNumbers();}else{hideKillNumbers();}}else if(feature==='wuxing'){localStorage.setItem("showWuxing",isWuxingChecked);if(isWuxingChecked){ShowWuxingNumbers();}else{hideWuxing();}}}
