@@ -442,7 +442,7 @@ function countNumbers() {
     });
 
     let totalLines = lines.length;
-    var inputText = document.getElementById("textInput").value;
+    
     var numbers = Array.from({ length: 49 }, (_, i) => (i + 1).toString().padStart(2, '0'));
     var countMap = {};
     // 初始化统计对象
@@ -450,7 +450,7 @@ function countNumbers() {
         countMap[number] = 0;
     });
     // 过滤并统计1-49号数的出现次数
-    var filteredNumbers = inputText.match(/\b\d{2}\b/g);
+	var filteredNumbers = extractAndFormatNumbers(editorContent);
     if (filteredNumbers) {
         filteredNumbers.forEach(num => {
             if (countMap.hasOwnProperty(num)) {
