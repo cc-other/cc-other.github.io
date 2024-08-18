@@ -262,7 +262,37 @@ filter: brightness(85%);
 .radio-input {
     margin-right: 5px;
 }
-
+/* Toast Container */
+.toast-container {
+position: fixed;
+bottom: 20px;
+right: 20px;
+z-index: 9999;
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+}
+/* Toast Notification */
+.toast {
+background: #4a90e2; /* 明亮的蓝色背景 */
+color: #fff; /* 白色文字 */
+padding: 15px 20px;
+border-radius: 8px;
+opacity: 0;
+transition: opacity 0.5s, transform 0.5s;
+transform: translateY(20px);
+font-family: Arial, sans-serif;
+font-size: 16px;
+position: relative;
+max-width: 320px;
+word-wrap: break-word;
+border: 1px solid #357ABD; /* 较暗的蓝色边框 */
+box-shadow: none; /* 去掉阴影 */
+}
+.toast.show {
+opacity: 1;
+transform: translateY(0);
+}
 </style>
 </head>
 <body>
@@ -273,7 +303,6 @@ filter: brightness(85%);
 <div class="menu-item" onclick="navigateTo('index.html')">挑码报表</div>
 <div class="menu-item" onclick="navigateTo('ExtractZodiacs.html')">杀肖统计</div>
 <div class="menu-item" onclick="navigateTo('ExtractNumberCount.html')">号码统计</div>
-
 </div>
 <script>
 // 切换右上角菜单的显示状态
@@ -343,7 +372,7 @@ var editor = CodeMirror.fromTextArea(document.getElementById("textInput"), {
 lineNumbers: true, // 显示行号
 lineWrapping: true,
 styleActiveLine: true, // 高亮当前行
-matchBrackets: true, // 匹配括号
+matchBrackets: false, // 匹配括号
 autoCloseBrackets: false, // 自动闭合括号
 mode: "text/plain", // 设置文本模式
 theme: "default", // 设置主题
@@ -577,6 +606,29 @@ editor.setCursor(lastLine, lastLinePos.ch);
 // 实时保存内容到缓存
 localStorage.setItem("ZodiacNumber", editor.getValue());
 }
+
+function showToast(message) {
+// 创建 Toast 元素
+const toast = document.createElement('div');
+toast.className = 'toast';
+toast.innerHTML = `<div class="message">${message}<\/div>`;
+const container = document.getElementById('toastContainer');
+container.appendChild(toast);
+// 显示 Toast
+setTimeout(() => {
+toast.classList.add('show');
+}, 10);  // 延迟确保过渡效果应用
+// 3 秒后隐藏并移除 Toast
+setTimeout(() => {
+toast.classList.remove('show');
+setTimeout(() => {
+toast.remove();
+}, 500);  // 延迟以匹配过渡时间
+}, 2000);
+}
+window.alert = function(message) {
+showToast(message);
+};
 </script>
 </body>
 </html>

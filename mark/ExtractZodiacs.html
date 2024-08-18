@@ -226,6 +226,38 @@ transition: background-color 0.3s;
 #copyButton2:hover {
 filter: brightness(85%);
 }
+
+/* Toast Container */
+.toast-container {
+position: fixed;
+bottom: 20px;
+right: 20px;
+z-index: 9999;
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+}
+/* Toast Notification */
+.toast {
+background: #4a90e2; /* 明亮的蓝色背景 */
+color: #fff; /* 白色文字 */
+padding: 15px 20px;
+border-radius: 8px;
+opacity: 0;
+transition: opacity 0.5s, transform 0.5s;
+transform: translateY(20px);
+font-family: Arial, sans-serif;
+font-size: 16px;
+position: relative;
+max-width: 320px;
+word-wrap: break-word;
+border: 1px solid #357ABD; /* 较暗的蓝色边框 */
+box-shadow: none; /* 去掉阴影 */
+}
+.toast.show {
+opacity: 1;
+transform: translateY(0);
+}
 </style>
 </head>
 <body>
@@ -236,36 +268,7 @@ filter: brightness(85%);
 <div class="menu-item" onclick="navigateTo('index.html')">挑码报表</div>
 <div class="menu-item" onclick="navigateTo('ExtractZodiacs.html')">杀肖统计</div>
 <div class="menu-item" onclick="navigateTo('ExtractNumberCount.html')">号码统计</div>
-
 </div>
-<script>
-// 切换右上角菜单的显示状态
-function toggleMenuTopRight() {
-var menuTopRight = document.getElementById("menuTopRight");
-menuTopRight.style.display = menuTopRight.style.display === "block" ? "none" : "block";
-}
-// 点击其他地方隐藏右上角菜单
-document.addEventListener("click", function(event) {
-var menuTopRight = document.getElementById("menuTopRight");
-var menuIconTopRight = document.getElementById("menuIconTopRight");
-// 如果点击的不是右上角菜单或浮动图标，则隐藏菜单
-if (!menuTopRight.contains(event.target) && !menuIconTopRight.contains(event.target)) {
-menuTopRight.style.display = "none";
-}
-});
-// 阻止右上角菜单和图标自身点击事件冒泡
-document.getElementById("menuTopRight").addEventListener("click", function(event) {
-event.stopPropagation();
-});
-document.getElementById("menuIconTopRight").addEventListener("click", function(event) {
-event.stopPropagation();
-});
-
-// 点击菜单项后导航到相应页面
-function navigateTo(url) {
-window.location.href = url;
-}
-</script>
 <div class="container">
 <div class="button-group">
 <button class="spring-button" onclick="copySeasonZodiac('spring')">春</button>
@@ -297,8 +300,34 @@ window.location.href = url;
 <div id="resultBox" style="display:none" contenteditable="true"></div>
 <button id="copyButton2" style="display:none" onclick="copyResult()">复制</button>
 <button id="clearButton" onclick="clearResultBox()" style="display:none">清空</button>
-</div>
+</div><div class="toast-container" id="toastContainer"></div>
 <script>
+// 切换右上角菜单的显示状态
+function toggleMenuTopRight() {
+var menuTopRight = document.getElementById("menuTopRight");
+menuTopRight.style.display = menuTopRight.style.display === "block" ? "none" : "block";
+}
+// 点击其他地方隐藏右上角菜单
+document.addEventListener("click", function(event) {
+var menuTopRight = document.getElementById("menuTopRight");
+var menuIconTopRight = document.getElementById("menuIconTopRight");
+// 如果点击的不是右上角菜单或浮动图标，则隐藏菜单
+if (!menuTopRight.contains(event.target) && !menuIconTopRight.contains(event.target)) {
+menuTopRight.style.display = "none";
+}
+});
+// 阻止右上角菜单和图标自身点击事件冒泡
+document.getElementById("menuTopRight").addEventListener("click", function(event) {
+event.stopPropagation();
+});
+document.getElementById("menuIconTopRight").addEventListener("click", function(event) {
+event.stopPropagation();
+});
+
+// 点击菜单项后导航到相应页面
+function navigateTo(url) {
+window.location.href = url;
+}
 // 保存输入框内容到本地缓存
 var editor = CodeMirror.fromTextArea(document.getElementById("textInput"), {
 lineNumbers: true, // 显示行号
@@ -507,6 +536,31 @@ function calculatePercentage(part, total,countstyle) {
 	let  PercentageFormatted = Percentage.toString().padStart(2, '0')+ '%';
     return PercentageFormatted;
 }
+function showToast(message) {
+// 创建 Toast 元素
+const toast = document.createElement('div');
+toast.className = 'toast';
+toast.innerHTML = `<div class="message">${message}<\/div>`;
+
+// 将 Toast 添加到容器中
+const container = document.getElementById('toastContainer');
+container.appendChild(toast);
+// 显示 Toast
+setTimeout(() => {
+toast.classList.add('show');
+}, 10);  // 延迟确保过渡效果应用
+
+// 3 秒后隐藏并移除 Toast
+setTimeout(() => {
+toast.classList.remove('show');
+setTimeout(() => {
+toast.remove();
+}, 500);  // 延迟以匹配过渡时间
+}, 2000);
+}
+window.alert = function(message) {
+showToast(message);
+};
 </script>
 </body>
 </html>

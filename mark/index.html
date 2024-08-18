@@ -363,54 +363,82 @@ background-color: #ffffff; /* 确保背景为白色 */
 border-radius: 8px; /* 圆角 */
 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加轻微阴影 */
 }
-
-       .custom-checkbox {
-           // display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 15px;
-            cursor: pointer;
-        }
-        .custom-checkbox input[type="checkbox"] {
-            display: none; /* 隐藏默认复选框 */
-        }
-
-        .checkbox-button {
-            position: relative;
-            padding: 0px 20px; /* 增加右侧内边距，以确保文本不会遮挡勾选标记 */
-            background-color: #008080;
-            color: white;
-            border: 1px solid #008080;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
-            text-align: center;
-            overflow: hidden; /* 确保伪元素不会超出按钮边界 */
-        }
-
-        .checkbox-button::before {
-            content: '';
-            position: absolute;
-            left: 3px; /* 调整位置，以避免与文本重叠 */
-            top: 50%;
-            transform: translateY(-50%);
-            width: 12px;
-            height: 12px;
-            border: 2px solid white;
-            border-radius: 2px;
-            background-color: transparent;
-        }
-        .custom-checkbox input[type="checkbox"]:checked + .checkbox-button {
-            background-color: #d11e58;
-            border-color: #d11e58;
-        }
-        .custom-checkbox input[type="checkbox"]:checked + .checkbox-button::before {
-            content: '✓';
-            color: #ffffff;
-            text-align: center;
-            line-height: 15px;
-            font-weight: bold;
-        }
+.custom-checkbox {
+// display: flex;
+align-items: center;
+gap: 10px;
+font-size: 15px;
+cursor: pointer;
+}
+.custom-checkbox input[type="checkbox"] {
+display: none; /* 隐藏默认复选框 */
+}
+.checkbox-button {
+position: relative;
+padding: 0px 20px; /* 增加右侧内边距，以确保文本不会遮挡勾选标记 */
+background-color: #008080;
+color: white;
+border: 1px solid #008080;
+border-radius: 4px;
+cursor: pointer;
+transition: background-color 0.3s, border-color 0.3s;
+text-align: center;
+overflow: hidden; /* 确保伪元素不会超出按钮边界 */
+}
+.checkbox-button::before {
+content: '';
+position: absolute;
+left: 3px; /* 调整位置，以避免与文本重叠 */
+top: 50%;
+transform: translateY(-50%);
+width: 12px;
+height: 12px;
+border: 2px solid white;
+border-radius: 2px;
+background-color: transparent;
+}
+.custom-checkbox input[type="checkbox"]:checked + .checkbox-button {
+background-color: #d11e58;
+border-color: #d11e58;
+}
+.custom-checkbox input[type="checkbox"]:checked + .checkbox-button::before {
+content: '✓';
+color: #ffffff;
+text-align: center;
+line-height: 15px;
+font-weight: bold;
+}
+/* Toast Container */
+.toast-container {
+position: fixed;
+bottom: 20px;
+right: 20px;
+z-index: 9999;
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+}
+/* Toast Notification */
+.toast {
+background: #4a90e2; /* 明亮的蓝色背景 */
+color: #fff; /* 白色文字 */
+padding: 15px 20px;
+border-radius: 8px;
+opacity: 0;
+transition: opacity 0.5s, transform 0.5s;
+transform: translateY(20px);
+font-family: Arial, sans-serif;
+font-size: 16px;
+position: relative;
+max-width: 320px;
+word-wrap: break-word;
+border: 1px solid #357ABD; /* 较暗的蓝色边框 */
+box-shadow: none; /* 去掉阴影 */
+}
+.toast.show {
+opacity: 1;
+transform: translateY(0);
+}
 </style>
 </head>
 <body>
@@ -474,46 +502,46 @@ box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加轻微阴影 */
 </tbody>
 </table>
 </div>
-</div>
+</div><div class="toast-container" id="toastContainer"></div>
 <script>
 const zodiacOrder = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
 function getChineseZodiac(year) {
-    const startYear = 1900;
-    const index = (year - startYear) % 12;
-    return zodiacOrder[index < 0 ? index + 12 : index];
+const startYear = 1900;
+const index = (year - startYear) % 12;
+return zodiacOrder[index < 0 ? index + 12 : index];
 }
 const currentYear = new Date().getFullYear();
 const CurrentZodiac = getChineseZodiac(currentYear);
 function adjustAndReverseZodiacOrder(zodiac) {
-    const index = zodiacOrder.indexOf(zodiac);
-    if (index === -1) {
-        throw new Error(`Unknown zodiac: ${zodiac}`);
-    }
-    const shiftedZodiac = zodiacOrder.slice(index).concat(zodiacOrder.slice(0, index));
-    const adjustedZodiac = shiftedZodiac.slice(1).concat(shiftedZodiac[0]);
-    const reversedZodiac = adjustedZodiac.reverse();
-    return reversedZodiac;
+const index = zodiacOrder.indexOf(zodiac);
+if (index === -1) {
+throw new Error(`Unknown zodiac: ${zodiac}`);
+}
+const shiftedZodiac = zodiacOrder.slice(index).concat(zodiacOrder.slice(0, index));
+const adjustedZodiac = shiftedZodiac.slice(1).concat(shiftedZodiac[0]);
+const reversedZodiac = adjustedZodiac.reverse();
+return reversedZodiac;
 }
 function generateZodiacNumbers(zodiacList) {
-    const numbers = {};
-    let currentNumber = 1;
-    numbers[zodiacList[0]] = Array.from({
-        length: 5
-    }, (_, i) => (currentNumber + i * 12).toString().padStart(2, '0'));
-    currentNumber = 1;
-    for (let i = 1; i < zodiacList.length; i++) {
-        currentNumber += 1;
-        numbers[zodiacList[i]] = Array.from({
-            length: 4
-        }, (_, j) => (currentNumber + j * 12).toString().padStart(2, '0'));
-    }
-    const sortedNumbers = {};
-    zodiacOrder.forEach(zodiac => {
-        if (numbers[zodiac]) {
-            sortedNumbers[zodiac] = numbers[zodiac];
-        }
-    });
-    return sortedNumbers;
+const numbers = {};
+let currentNumber = 1;
+numbers[zodiacList[0]] = Array.from({
+length: 5
+}, (_, i) => (currentNumber + i * 12).toString().padStart(2, '0'));
+currentNumber = 1;
+for (let i = 1; i < zodiacList.length; i++) {
+currentNumber += 1;
+numbers[zodiacList[i]] = Array.from({
+length: 4
+}, (_, j) => (currentNumber + j * 12).toString().padStart(2, '0'));
+}
+const sortedNumbers = {};
+zodiacOrder.forEach(zodiac => {
+if (numbers[zodiac]) {
+sortedNumbers[zodiac] = numbers[zodiac];
+}
+});
+return sortedNumbers;
 }
 const adjustedZodiacOrder = adjustAndReverseZodiacOrder(CurrentZodiac);
 const zodiacMap = generateZodiacNumbers(adjustedZodiacOrder);
@@ -521,510 +549,522 @@ const redWave = ["01", "02", "07", "08", "12", "13", "18", "19", "23", "24", "29
 const blueWave = ["03", "04", "09", "10", "14", "15", "20", "25", "26", "31", "36", "37", "41", "42", "47", "48"];
 const greenWave = ["05", "06", "11", "16", "17", "21", "22", "27", "28", "32", "33", "38", "39", "43", "44", "49"];
 const getColor = (number) => {
-    if (redWave.includes(number))
-        return 'bg_red';
-    if (blueWave.includes(number))
-        return 'bg_blue';
-    if (greenWave.includes(number))
-        return 'bg_green';
-    return '';
+if (redWave.includes(number))
+return 'bg_red';
+if (blueWave.includes(number))
+return 'bg_blue';
+if (greenWave.includes(number))
+return 'bg_green';
+return '';
 };
 const Tbody = document.getElementById('ZodiacTbody');
 for (const zodiac in zodiacMap) {
-    const row = document.createElement('tr');
-    const cellName = document.createElement('td');
-    cellName.textContent = zodiac;
-    row.appendChild(cellName);
-    const cellNumbers = document.createElement('td');
-    zodiacMap[zodiac].forEach(number => {
-        const spanNumber = document.createElement('span');
-        spanNumber.id = "number";
-        spanNumber.className = getColor(number);
-        spanNumber.innerHTML = `<span class=\"highlight-overlay\"></span><span class=\"exclamation\"></span><span class=\"number-wuxing\"></span><span class=\"number-badge\"></span>${number}`;
-        cellNumbers.appendChild(spanNumber);
-        cellNumbers.appendChild(document.createTextNode(' '));
-    });
-    row.appendChild(cellNumbers);
-    Tbody.appendChild(row);
+const row = document.createElement('tr');
+const cellName = document.createElement('td');
+cellName.textContent = zodiac;
+row.appendChild(cellName);
+const cellNumbers = document.createElement('td');
+zodiacMap[zodiac].forEach(number => {
+const spanNumber = document.createElement('span');
+spanNumber.id = "number";
+spanNumber.className = getColor(number);
+spanNumber.innerHTML = `<span class=\"highlight-overlay\"></span><span class=\"exclamation\"></span><span class=\"number-wuxing\"></span><span class=\"number-badge\"></span>${number}`;
+cellNumbers.appendChild(spanNumber);
+cellNumbers.appendChild(document.createTextNode(' '));
+});
+row.appendChild(cellNumbers);
+Tbody.appendChild(row);
 }
 var editor_pop = CodeMirror.fromTextArea(document.getElementById("settingkillnumber"), {
-    lineNumbers: true,
-    lineWrapping: true,
-    styleActiveLine: true,
-    matchBrackets: false,
-    autoCloseBrackets: false,
-    mode: "text/plain",
-    theme: "default",
-    scrollbarStyle: "simple"
+lineNumbers: true,
+lineWrapping: true,
+styleActiveLine: true,
+matchBrackets: false,
+autoCloseBrackets: false,
+mode: "text/plain",
+theme: "default",
+scrollbarStyle: "simple"
 });
 editor_pop.setOption("lineNumbers", true);
 editor_pop.refresh();
 editor_pop.setSize('100%', '350px');
 editor_pop.on("change", function (cm) {
-    editor_pop.setOption("lineNumbers", true);
-    editor_pop.save();
-    var editorContent = editor_pop.getValue();
-    localStorage.setItem("killnumber", editorContent);
+editor_pop.setOption("lineNumbers", true);
+editor_pop.save();
+var editorContent = editor_pop.getValue();
+localStorage.setItem("killnumber", editorContent);
 });
 var editor_main = CodeMirror.fromTextArea(document.getElementById("textInput"), {
-    lineNumbers: true,
-    lineWrapping: true,
-    styleActiveLine: true,
-    matchBrackets: false,
-    autoCloseBrackets: false,
-    mode: "text/plain",
-    theme: "default",
-    scrollbarStyle: "simple"
+lineNumbers: true,
+lineWrapping: true,
+styleActiveLine: true,
+matchBrackets: false,
+autoCloseBrackets: false,
+mode: "text/plain",
+theme: "default",
+scrollbarStyle: "simple"
 });
 editor_main.setSize('calc(100% - 20px)', '238px');
-
 editor_main.on("change", function (cm) {
-    editor_main.setOption("lineNumbers", true);
-    editor_main.save();
-    var editorContent = editor_main.getValue();
-    localStorage.setItem("highlightNumbers", editorContent);
-	highlightNumbers();
+editor_main.setOption("lineNumbers", true);
+editor_main.save();
+var editorContent = editor_main.getValue();
+localStorage.setItem("highlightNumbers", editorContent);
+highlightNumbers();
 });
-
 function showSettingsModal() {
-    document.getElementById("settingModal").style.display = "flex";
-    let editorContent = localStorage.getItem("killnumber");
-    let lines = editorContent.split('\n').filter(line => line.trim() !== '');
-    editor_pop.setValue(lines.join('\n'));
-    var menu = document.getElementById("menuTopRight");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
+document.getElementById("settingModal").style.display = "flex";
+let editorContent = localStorage.getItem("killnumber");
+let lines = editorContent.split('\n').filter(line => line.trim() !== '');
+editor_pop.setValue(lines.join('\n'));
+var menu = document.getElementById("menuTopRight");
+menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 function closeModal() {
-    document.getElementById("settingModal").style.display = "none";
+document.getElementById("settingModal").style.display = "none";
 }
 function saveSettings() {
-    const content = editor_pop.getValue();
-    localStorage.setItem("killnumber", content);
-    const isKillNumberChecked = document.getElementById('showKillNumberCheckbox').checked;
-    if (isKillNumberChecked) {
-        countKillNumbers();
-    }
-    closeModal();
+const content = editor_pop.getValue();
+localStorage.setItem("killnumber", content);
+const isKillNumberChecked = document.getElementById('showKillNumberCheckbox').checked;
+if (isKillNumberChecked) {
+countKillNumbers();
+}
+closeModal();
 }
 function clearSettings() {
-    editor_pop.setValue("");
-    localStorage.removeItem("killnumber");
+editor_pop.setValue("");
+localStorage.removeItem("killnumber");
 }
 function toggleMenuTopRight() {
-    var menuTopRight = document.getElementById("menuTopRight");
-    menuTopRight.style.display = menuTopRight.style.display === "block" ? "none" : "block";
+var menuTopRight = document.getElementById("menuTopRight");
+menuTopRight.style.display = menuTopRight.style.display === "block" ? "none" : "block";
 }
 document.addEventListener("click", function (event) {
-    var menuTopRight = document.getElementById("menuTopRight");
-    var menuIconTopRight = document.getElementById("menuIconTopRight");
-    if (!menuTopRight.contains(event.target) && !menuIconTopRight.contains(event.target)) {
-        menuTopRight.style.display = "none";
-    }
+var menuTopRight = document.getElementById("menuTopRight");
+var menuIconTopRight = document.getElementById("menuIconTopRight");
+if (!menuTopRight.contains(event.target) && !menuIconTopRight.contains(event.target)) {
+menuTopRight.style.display = "none";
+}
 });
 document.getElementById("menuTopRight").addEventListener("click", function (event) {
-    event.stopPropagation();
+event.stopPropagation();
 });
 document.getElementById("menuIconTopRight").addEventListener("click", function (event) {
-    event.stopPropagation();
+event.stopPropagation();
 });
 function navigateTo(url) {
-    window.location.href = url;
+window.location.href = url;
 }
 function toggleFeature(feature) {
-    const isKillNumberChecked = document.getElementById('showKillNumberCheckbox').checked;
-    const isWuxingChecked = document.getElementById('showWuxingCheckbox').checked;
-    if (feature === 'killNumber') {
-        localStorage.setItem("showKillNumber", isKillNumberChecked);
-        if (isKillNumberChecked) {
-            countKillNumbers();
-        } else {
-            hideKillNumbers();
-        }
-    } else if (feature === 'wuxing') {
-        localStorage.setItem("showWuxing", isWuxingChecked);
-        if (isWuxingChecked) {
-            ShowWuxingNumbers();
-        } else {
-            hideWuxing();
-        }
-    }
+const isKillNumberChecked = document.getElementById('showKillNumberCheckbox').checked;
+const isWuxingChecked = document.getElementById('showWuxingCheckbox').checked;
+if (feature === 'killNumber') {
+localStorage.setItem("showKillNumber", isKillNumberChecked);
+if (isKillNumberChecked) {
+countKillNumbers();
+} else {
+hideKillNumbers();
+}
+} else if (feature === 'wuxing') {
+localStorage.setItem("showWuxing", isWuxingChecked);
+if (isWuxingChecked) {
+ShowWuxingNumbers();
+} else {
+hideWuxing();
+}
+}
 }
 document.addEventListener("DOMContentLoaded", function () {
-    const checkbox = document.getElementById("showKillNumberCheckbox");
-    checkbox.checked = localStorage.getItem("showKillNumber") === "true";
-    const checkbox_wuxing = document.getElementById("showWuxingCheckbox");
-    checkbox_wuxing.checked = localStorage.getItem("showWuxing") === "true";
-    var cachedTextInput = localStorage.getItem("highlightNumbers") || "";
-	cachedTextInput = cachedTextInput.replace(/\n{2,}/g, '\n');
-    editor_main.setValue(cachedTextInput);
-	editor_main.refresh();
-    if (localStorage.getItem("showKillNumber") === "true") {
-        countKillNumbers();
-    } else {
-        hideKillNumbers();
-    }
-    if (localStorage.getItem("showWuxing") === "true") {
-        ShowWuxingNumbers();
-    } else {
-        hideWuxing();
-    }
+const checkbox = document.getElementById("showKillNumberCheckbox");
+checkbox.checked = localStorage.getItem("showKillNumber") === "true";
+const checkbox_wuxing = document.getElementById("showWuxingCheckbox");
+checkbox_wuxing.checked = localStorage.getItem("showWuxing") === "true";
+var cachedTextInput = localStorage.getItem("highlightNumbers") || "";
+cachedTextInput = cachedTextInput.replace(/\n{2,}/g, '\n');
+editor_main.setValue(cachedTextInput);
+editor_main.refresh();
+if (localStorage.getItem("showKillNumber") === "true") {
+countKillNumbers();
+} else {
+hideKillNumbers();
+}
+if (localStorage.getItem("showWuxing") === "true") {
+ShowWuxingNumbers();
+} else {
+hideWuxing();
+}
 });
 function formatNumbers() {
-    var inputText = editor_main.getValue();
-    var numberArray = extractAndFormatNumbers(inputText);
-    const groupedLines = [];
-    let line = [];
-    numberArray.forEach((number, index) => {
-        line.push(number);
-        if (line.length === 5 || index === numberArray.length - 1) {
-            groupedLines.push(line.join(','));
-            line = [];
-        }
-    });
-    let output = groupedLines.join('\n');
-    editor_main.setValue(output);
-    localStorage.setItem("highlightNumbers", output);
-    var menu = document.getElementById("menuTopRight");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
+var inputText = editor_main.getValue();
+var numberArray = extractAndFormatNumbers(inputText);
+const groupedLines = [];
+let line = [];
+numberArray.forEach((number, index) => {
+line.push(number);
+if (line.length === 5 || index === numberArray.length - 1) {
+groupedLines.push(line.join(','));
+line = [];
+}
+});
+let output = groupedLines.join('\n');
+editor_main.setValue(output);
+localStorage.setItem("highlightNumbers", output);
+var menu = document.getElementById("menuTopRight");
+menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 function formatZodiacs() {
-    var inputText = editor_main.getValue();
-    var numberArray = extractAndFormatNumbers(inputText);
-    const zodiacNumbers = {};
-    numberArray.forEach(number => {
-        for (const zodiac in zodiacMap) {
-            if (zodiacMap[zodiac].includes(number)) {
-                if (!zodiacNumbers[zodiac]) {
-                    zodiacNumbers[zodiac] = [];
-                }
-                zodiacNumbers[zodiac].push(number);
-                break;
-            }
-        }
-    });
-    let output = "";
-    for (const zodiac in zodiacNumbers) {
-        if (zodiacNumbers[zodiac].length > 0) {
-            output += `${zodiac}: ${zodiacNumbers[zodiac].join(',')}\n`;
-        }
-    }
-    editor_main.setValue(output);
-    localStorage.setItem("highlightNumbers", output);
-    var menu = document.getElementById("menuTopRight");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
+var inputText = editor_main.getValue();
+var numberArray = extractAndFormatNumbers(inputText);
+const zodiacNumbers = {};
+numberArray.forEach(number => {
+for (const zodiac in zodiacMap) {
+if (zodiacMap[zodiac].includes(number)) {
+if (!zodiacNumbers[zodiac]) {
+zodiacNumbers[zodiac] = [];
+}
+zodiacNumbers[zodiac].push(number);
+break;
+}
+}
+});
+let output = "";
+for (const zodiac in zodiacNumbers) {
+if (zodiacNumbers[zodiac].length > 0) {
+output += `${zodiac}: ${zodiacNumbers[zodiac].join(',')}\n`;
+}
+}
+editor_main.setValue(output);
+localStorage.setItem("highlightNumbers", output);
+var menu = document.getElementById("menuTopRight");
+menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 function formatColor() {
-    var inputText = editor_main.getValue();
-    var numberArray = extractAndFormatNumbers(inputText);
-    const redNumbers = [];
-    const blueNumbers = [];
-    const greenNumbers = [];
-    numberArray.forEach(number => {
-        if (redWave.includes(number)) {
-            redNumbers.push(number);
-        } else if (blueWave.includes(number)) {
-            blueNumbers.push(number);
-        } else if (greenWave.includes(number)) {
-            greenNumbers.push(number);
-        }
-    });
-    let output = "";
-    if (redNumbers.length > 0) {
-        output += "红: " + redNumbers.join(',') + "\n";
-    }
-    if (blueNumbers.length > 0) {
-        output += "蓝: " + blueNumbers.join(',') + "\n";
-    }
-    if (greenNumbers.length > 0) {
-        output += "绿: " + greenNumbers.join(',');
-    }
-    editor_main.setValue(output);
-    localStorage.setItem("highlightNumbers", output);
-    var menu = document.getElementById("menuTopRight");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
+var inputText = editor_main.getValue();
+var numberArray = extractAndFormatNumbers(inputText);
+const redNumbers = [];
+const blueNumbers = [];
+const greenNumbers = [];
+numberArray.forEach(number => {
+if (redWave.includes(number)) {
+redNumbers.push(number);
+} else if (blueWave.includes(number)) {
+blueNumbers.push(number);
+} else if (greenWave.includes(number)) {
+greenNumbers.push(number);
+}
+});
+let output = "";
+if (redNumbers.length > 0) {
+output += "红: " + redNumbers.join(',') + "\n";
+}
+if (blueNumbers.length > 0) {
+output += "蓝: " + blueNumbers.join(',') + "\n";
+}
+if (greenNumbers.length > 0) {
+output += "绿: " + greenNumbers.join(',');
+}
+editor_main.setValue(output);
+localStorage.setItem("highlightNumbers", output);
+var menu = document.getElementById("menuTopRight");
+menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 function FilterDuplicates() {
-    var inputText = editor_main.getValue();
-    var numberArray = extractAndFormatNumbers(inputText);
-    var repeatedNumbers = [];
-    numberArray.forEach(function (number) {
-        if (!repeatedNumbers.includes(number)) {
-            repeatedNumbers.push(number);
-        }
-    });
-    if (repeatedNumbers.length > 0) {}
-    const groupedLines = [];
-    let line = [];
-    repeatedNumbers.forEach((number, index) => {
-        line.push(number);
-        if (line.length === 5 || index === repeatedNumbers.length - 1) {
-            groupedLines.push(line.join(','));
-            line = [];
-        }
-    });
-    let output = groupedLines.join('\n');
-    editor_main.setValue(output);
-    localStorage.setItem("highlightNumbers", output);
-    var menu = document.getElementById("menuTopRight");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
+var inputText = editor_main.getValue();
+var numberArray = extractAndFormatNumbers(inputText);
+var repeatedNumbers = [];
+numberArray.forEach(function (number) {
+if (!repeatedNumbers.includes(number)) {
+repeatedNumbers.push(number);
+}
+});
+if (repeatedNumbers.length > 0) {}
+const groupedLines = [];
+let line = [];
+repeatedNumbers.forEach((number, index) => {
+line.push(number);
+if (line.length === 5 || index === repeatedNumbers.length - 1) {
+groupedLines.push(line.join(','));
+line = [];
+}
+});
+let output = groupedLines.join('\n');
+editor_main.setValue(output);
+localStorage.setItem("highlightNumbers", output);
+var menu = document.getElementById("menuTopRight");
+menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 function FormatDuplicates() {
-    var inputText = editor_main.getValue();
-    var numberArray = extractAndFormatNumbers(inputText);
-    var uniqueNumbers = [];
-    var repeatedNumbers = [];
-    var nonRepeatedNumbers = [];
-    numberArray.forEach(function (number) {
-        if (!uniqueNumbers.includes(number)) {
-            uniqueNumbers.push(number);
-        } else if (!repeatedNumbers.includes(number)) {
-            repeatedNumbers.push(number);
-        }
-    });
-    uniqueNumbers.forEach(function (number) {
-        if (!repeatedNumbers.includes(number)) {
-            nonRepeatedNumbers.push(number);
-        }
-    });
-    function formatNumbers(numbers) {
-        const groupedLines = [];
-        let line = [];
-        numbers.forEach((number, index) => {
-            line.push(number);
-            if (line.length === 5 || index === numbers.length - 1) {
-                groupedLines.push(line.join(','));
-                line = [];
-            }
-        });
-        return groupedLines.join('\n');
-    }
-    if (repeatedNumbers.length > 0) {
-        let output = "" + formatNumbers(uniqueNumbers) + "\n\n[重号]\n" + formatNumbers(repeatedNumbers) + "\n\n[未重号]\n" + formatNumbers(nonRepeatedNumbers);
-        editor_main.setValue(output);
-    }
-    var menu = document.getElementById("menuTopRight");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
+var inputText = editor_main.getValue();
+var numberArray = extractAndFormatNumbers(inputText);
+var uniqueNumbers = [];
+var repeatedNumbers = [];
+var nonRepeatedNumbers = [];
+numberArray.forEach(function (number) {
+if (!uniqueNumbers.includes(number)) {
+uniqueNumbers.push(number);
+} else if (!repeatedNumbers.includes(number)) {
+repeatedNumbers.push(number);
+}
+});
+uniqueNumbers.forEach(function (number) {
+if (!repeatedNumbers.includes(number)) {
+nonRepeatedNumbers.push(number);
+}
+});
+function formatNumbers(numbers) {
+const groupedLines = [];
+let line = [];
+numbers.forEach((number, index) => {
+line.push(number);
+if (line.length === 5 || index === numbers.length - 1) {
+groupedLines.push(line.join(','));
+line = [];
+}
+});
+return groupedLines.join('\n');
+}
+if (repeatedNumbers.length > 0) {
+let output = "" + formatNumbers(uniqueNumbers) + "\n\n[重号]\n" + formatNumbers(repeatedNumbers) + "\n\n[未重号]\n" + formatNumbers(nonRepeatedNumbers);
+editor_main.setValue(output);
+}
+var menu = document.getElementById("menuTopRight");
+menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 function extractAndFormatNumbers(text) {
-    text = text.replace(/o|O/g, '0');
-    const regex = /\b\d{1,2}\b/g;
-    const lines = text.split('\n');
-    let result = [];
-    for (let line of lines) {
-        const index = line.indexOf('各');
-        if (index !== -1) {
-            line = line.substring(0, index);
-        }
-        const matches = line.match(regex);
-        if (matches) {
-            const filteredAndFormattedMatches = matches.map(num => parseInt(num, 10)).filter(num => num >= 1 && num <= 49).map(num => num < 10 ? '0' + num : num.toString());
-            result.push(...filteredAndFormattedMatches);
-        }
-    }
-    return result;
+text = text.replace(/o|O/g, '0');
+const regex = /\b\d{1,2}\b/g;
+const lines = text.split('\n');
+let result = [];
+for (let line of lines) {
+const index = line.indexOf('各');
+if (index !== -1) {
+line = line.substring(0, index);
+}
+const matches = line.match(regex);
+if (matches) {
+const filteredAndFormattedMatches = matches.map(num => parseInt(num, 10)).filter(num => num >= 1 && num <= 49).map(num => num < 10 ? '0' + num : num.toString());
+result.push(...filteredAndFormattedMatches);
+}
+}
+return result;
 }
 function copyToClipboard() {
-    const resultTextarea = editor_main.getValue();
-    copyTextToClipboard(resultTextarea);
+const resultTextarea = editor_main.getValue();
+copyTextToClipboard(resultTextarea);
 }
 function clearTotalCount() {
-    const totalCountDiv = document.getElementById('totalCount');
-    totalCountDiv.innerText = `计数: 0 号码`;
+const totalCountDiv = document.getElementById('totalCount');
+totalCountDiv.innerText = `计数: 0 号码`;
 }
 function displayTotalCount(count, nCount) {
-    const totalCountDiv = document.getElementById('totalCount');
-    var stringCount;
-    if (nCount > 0) {
-        stringCount = `计数/重复: ${count}/${nCount} 号码`;
-    } else {
-        stringCount = `计数: ${count} 号码`;
-    }
-    totalCountDiv.innerText = stringCount;
+const totalCountDiv = document.getElementById('totalCount');
+var stringCount;
+if (nCount > 0) {
+stringCount = `计数/重复: ${count}/${nCount} 号码`;
+} else {
+stringCount = `计数: ${count} 号码`;
 }
-function copyResult() {
-    var resultBox = document.getElementById("resultBox");
-    resultBox.focus();
-    document.execCommand("selectAll");
-    document.execCommand("copy");
-    alert("已复制");
+totalCountDiv.innerText = stringCount;
 }
 function clearCount() {
-    editor_main.setValue("");
-    localStorage.removeItem('highlightNumbers');
-    highlightNumbers();
+editor_main.setValue("");
+localStorage.removeItem('highlightNumbers');
+highlightNumbers();
 }
 function getKillNumbersFromCache() {
-    let cachedData = localStorage.getItem('killnumber');
-    return cachedData ? cachedData : '';
+let cachedData = localStorage.getItem('killnumber');
+return cachedData ? cachedData : '';
 }
 function countKillNumbers() {
-    var inputText = getKillNumbersFromCache();
-    var numbers = Array.from({
-        length: 49
-    }, (_, i) => (i + 1).toString().padStart(2, '0'));
-    var countMap = {};
-    numbers.forEach(number => {
-        countMap[number] = 0;
-    });
-    var filteredNumbers = inputText.match(/\b\d{2}\b/g);
-    if (filteredNumbers) {
-        filteredNumbers.forEach(num => {
-            if (countMap.hasOwnProperty(num)) {
-                countMap[num]++;
-            }
-        });
-    }
-    document.querySelectorAll('.number-badge').forEach(el => {
-        el.style.display = 'inline';
-    });
-    var allSpans = document.querySelectorAll('.ZodiacTable span');
-    allSpans.forEach(function (span) {
-        var text = span.textContent.trim();
-        var number_ = String(text.match(/\d{2}$/));
-        var number_badge = span.querySelector('.number-badge');
-        if (number_badge === null) {
-            return;
-        }
-        number_badge.textContent = countMap[number_];
-    })
+var inputText = getKillNumbersFromCache();
+var numbers = Array.from({
+length: 49
+}, (_, i) => (i + 1).toString().padStart(2, '0'));
+var countMap = {};
+numbers.forEach(number => {
+countMap[number] = 0;
+});
+var filteredNumbers = inputText.match(/\b\d{2}\b/g);
+if (filteredNumbers) {
+filteredNumbers.forEach(num => {
+if (countMap.hasOwnProperty(num)) {
+countMap[num]++;
+}
+});
+}
+document.querySelectorAll('.number-badge').forEach(el => {
+el.style.display = 'inline';
+});
+var allSpans = document.querySelectorAll('.ZodiacTable span');
+allSpans.forEach(function (span) {
+var text = span.textContent.trim();
+var number_ = String(text.match(/\d{2}$/));
+var number_badge = span.querySelector('.number-badge');
+if (number_badge === null) {
+return;
+}
+number_badge.textContent = countMap[number_];
+})
 }
 function getWuxing(number, wuxingMap, wuxingColors) {
-    for (let key in wuxingMap) {
-        if (wuxingMap[key].includes(number)) {
-            return {
-                element: key,
-                color: wuxingColors[key]
-            };
-        }
-    }
-    return null;
+for (let key in wuxingMap) {
+if (wuxingMap[key].includes(number)) {
+return {
+element: key,
+color: wuxingColors[key]
+};
+}
+}
+return null;
 }
 function ShowWuxingNumbers() {
-    document.querySelectorAll('.number-wuxing').forEach(el => {
-        el.style.display = 'inline';
-    });
-    var allSpans = document.querySelectorAll('.ZodiacTable span');
-    var wuxingInfo = "";
-    const wuxingMap = {
-        "金": ["02", "03", "10", "11", "24", "25", "32", "33", "40", "41"],
-        "木": ["06", "07", "14", "15", "22", "23", "36", "37", "44", "45"],
-        "水": ["12", "13", "20", "21", "28", "29", "42", "43"],
-        "火": ["01", "08", "09", "16", "17", "30", "31", "38", "39", "46", "47"],
-        "土": ["04", "05", "18", "19", "26", "27", "34", "35", "48", "49"]
-    };
-    const wuxingColors = {
-        "金": "#6B621A",
-        "木": "#4682B4",
-        "水": "#4682B4",
-        "火": "#DD0A0A",
-        "土": "#5D3D14"
-    };
-    allSpans.forEach(function (span) {
-        var text = span.textContent.trim();
-        var number_ = String(text.match(/\d{2}$/));
-        var number_wuxing = span.querySelector('.number-wuxing');
-        if (number_wuxing === null) {
-            return;
-        }
-        wuxingInfo = getWuxing(number_, wuxingMap, wuxingColors);
-        if (wuxingInfo) {
-            number_wuxing.textContent = wuxingInfo.element;
-            number_wuxing.style.color = wuxingInfo.color;
-        }
-    })
+document.querySelectorAll('.number-wuxing').forEach(el => {
+el.style.display = 'inline';
+});
+var allSpans = document.querySelectorAll('.ZodiacTable span');
+var wuxingInfo = "";
+const wuxingMap = {
+"金": ["02", "03", "10", "11", "24", "25", "32", "33", "40", "41"],
+"木": ["06", "07", "14", "15", "22", "23", "36", "37", "44", "45"],
+"水": ["12", "13", "20", "21", "28", "29", "42", "43"],
+"火": ["01", "08", "09", "16", "17", "30", "31", "38", "39", "46", "47"],
+"土": ["04", "05", "18", "19", "26", "27", "34", "35", "48", "49"]
+};
+const wuxingColors = {
+"金": "#6B621A",
+"木": "#4682B4",
+"水": "#4682B4",
+"火": "#DD0A0A",
+"土": "#5D3D14"
+};
+allSpans.forEach(function (span) {
+var text = span.textContent.trim();
+var number_ = String(text.match(/\d{2}$/));
+var number_wuxing = span.querySelector('.number-wuxing');
+if (number_wuxing === null) {
+return;
+}
+wuxingInfo = getWuxing(number_, wuxingMap, wuxingColors);
+if (wuxingInfo) {
+number_wuxing.textContent = wuxingInfo.element;
+number_wuxing.style.color = wuxingInfo.color;
+}
+})
 }
 function hideKillNumbers() {
-    document.querySelectorAll('.number-badge').forEach(el => el.style.display = 'none');
+document.querySelectorAll('.number-badge').forEach(el => el.style.display = 'none');
 }
 function hideWuxing() {
-    document.querySelectorAll('.number-wuxing').forEach(el => el.style.display = 'none');
+document.querySelectorAll('.number-wuxing').forEach(el => el.style.display = 'none');
 }
 function highlightNumbers() {
-    var inputText = editor_main.getValue();
-    var numberArray = extractAndFormatNumbers(inputText);
-    var repeatedNumbers = [];
-    var numberCount = {};
-    numberArray.forEach(function (number) {
-        if (numberCount[number]) {
-            numberCount[number]++;
-            if (!repeatedNumbers.includes(number)) {
-                repeatedNumbers.push(number);
-            }
-        } else {
-            numberCount[number] = 1;
-        }
-    });
-    if (numberArray.length > 0) {
-        displayTotalCount(numberArray.length, repeatedNumbers.length);
-    } else {
-        clearTotalCount();
-    }
-    var allSpans = document.querySelectorAll('.ZodiacTable span');
-    allSpans.forEach(function (span) {
-        var text = span.textContent.trim();
-        var number = String(text.match(/\d{2}$/));
-        var exclamation = span.querySelector('.exclamation');
-        if (exclamation === null) {
-            return;
-        }
-        if (repeatedNumbers.includes(number)) {
-            if (exclamation) {
-                span.classList.add('exclamation-visible');
-            }
-        } else {
-            if (exclamation) {
-                span.classList.remove('exclamation-visible');
-            }
-        }
-        var overlayElement = span.querySelector('.highlight-overlay');
-        if (numberArray.includes(number)) {
-            if (overlayElement) {
-                overlayElement.style.display = 'none';
-                span.style.fontWeight = 'bold';
-                overlayElement.style.backgroundColor = 'transparent';
-            }
-        } else {
-            if (overlayElement) {
-                overlayElement.style.display = 'block';
-                span.style.fontWeight = 'normal';
-                overlayElement.style.backgroundColor = 'rgba(245,245,220, 0.8)';
-            }
-        }
-    });
-    updateButtonCount('copyGreenButton', 'green');
-    updateButtonCount('copyRedButton', 'red');
-    updateButtonCount('copyBlueButton', 'blue');
+var inputText = editor_main.getValue();
+var numberArray = extractAndFormatNumbers(inputText);
+var repeatedNumbers = [];
+var numberCount = {};
+numberArray.forEach(function (number) {
+if (numberCount[number]) {
+numberCount[number]++;
+if (!repeatedNumbers.includes(number)) {
+repeatedNumbers.push(number);
+}
+} else {
+numberCount[number] = 1;
+}
+});
+if (numberArray.length > 0) {
+displayTotalCount(numberArray.length, repeatedNumbers.length);
+} else {
+clearTotalCount();
+}
+var allSpans = document.querySelectorAll('.ZodiacTable span');
+allSpans.forEach(function (span) {
+var text = span.textContent.trim();
+var number = String(text.match(/\d{2}$/));
+var exclamation = span.querySelector('.exclamation');
+if (exclamation === null) {
+return;
+}
+if (repeatedNumbers.includes(number)) {
+if (exclamation) {
+span.classList.add('exclamation-visible');
+}
+} else {
+if (exclamation) {
+span.classList.remove('exclamation-visible');
+}
+}
+var overlayElement = span.querySelector('.highlight-overlay');
+if (numberArray.includes(number)) {
+if (overlayElement) {
+overlayElement.style.display = 'none';
+span.style.fontWeight = 'bold';
+overlayElement.style.backgroundColor = 'transparent';
+}
+} else {
+if (overlayElement) {
+overlayElement.style.display = 'block';
+span.style.fontWeight = 'normal';
+overlayElement.style.backgroundColor = 'rgba(245,245,220, 0.8)';
+}
+}
+});
+updateButtonCount('copyGreenButton', 'green');
+updateButtonCount('copyRedButton', 'red');
+updateButtonCount('copyBlueButton', 'blue');
 }
 function updateButtonCount(buttonId, color) {
-    let extractedNumbers = extractHighlightedNumbers(color);
-    let count = extractedNumbers ? extractedNumbers.split(',').length : 0;
-    let button = document.getElementById(buttonId);
-    button.textContent = button.textContent.split(' ')[0] + ` (${count})`;
+let extractedNumbers = extractHighlightedNumbers(color);
+let count = extractedNumbers ? extractedNumbers.split(',').length : 0;
+let button = document.getElementById(buttonId);
+button.textContent = button.textContent.split(' ')[0] + ` (${count})`;
 }
 function extractHighlightedNumbers(color) {
-    let allNumberElements = document.querySelectorAll(`.bg_${color}`);
-    let extractedNumbers = [];
-    allNumberElements.forEach(element => {
-        if (element.style.fontWeight === 'bold') {
-            extractedNumbers.push(element.textContent.trim());
-        }
-    });
-    return extractedNumbers.join(',');
+let allNumberElements = document.querySelectorAll(`.bg_${color}`);
+let extractedNumbers = [];
+allNumberElements.forEach(element => {
+if (element.style.fontWeight === 'bold') {
+extractedNumbers.push(element.textContent.trim());
+}
+});
+return extractedNumbers.join(',');
 }
 function copyTextToClipboard(text) {
-    const tempTextArea = document.createElement('textarea');
-    tempTextArea.value = text;
-    document.body.appendChild(tempTextArea);
-    tempTextArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(tempTextArea);
-    alert('已复制到剪贴板');
+const tempTextArea = document.createElement('textarea');
+tempTextArea.value = text;
+document.body.appendChild(tempTextArea);
+tempTextArea.select();
+document.execCommand('copy');
+document.body.removeChild(tempTextArea);
+alert('已复制到剪贴板');
 }
 function extractAndCopyColoredNumbers(color) {
-    const extractedNumbers = extractHighlightedNumbers(color);
-    copyTextToClipboard(extractedNumbers);
+const extractedNumbers = extractHighlightedNumbers(color);
+copyTextToClipboard(extractedNumbers);
 }
-
+function showToast(message) {
+// 创建 Toast 元素
+const toast = document.createElement('div');
+toast.className = 'toast';
+toast.innerHTML = `<div class="message">${message}<\/div>`;
+const container = document.getElementById('toastContainer');
+container.appendChild(toast);
+// 显示 Toast
+setTimeout(() => {
+toast.classList.add('show');
+}, 10);  // 延迟确保过渡效果应用
+// 3 秒后隐藏并移除 Toast
+setTimeout(() => {
+toast.classList.remove('show');
+setTimeout(() => {
+toast.remove();
+}, 500);  // 延迟以匹配过渡时间
+}, 2000);
+}
+window.alert = function(message) {
+showToast(message);
+};
 </script>
 </body>
 </html>
