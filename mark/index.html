@@ -194,11 +194,11 @@ filter: brightness(85%);
 width: calc(33.3% - 10px);
 background-color: #7f7f7f;
 }
-#copyButton {
+#DuplicatesButton {
 width: calc(33.3% - 10px);
 background-color: #ff7f0e;
 }
-#ZodiacsButton {
+#copyButton {
 width: calc(33.3% - 10px);
 background-color: #008080;
 }
@@ -440,7 +440,7 @@ box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加轻微阴影 */
 <div class="container">
 <textarea id="textInput" placeholder="输入号码..." spellcheck="false"></textarea>
 <div class="button-group">
-<button id="ZodiacsButton" onclick="FilterDuplicates()">去重</button>
+<button id="DuplicatesButton" onclick="FilterDuplicates()">去重</button>
 <button id="copyButton" onclick="copyToClipboard()">复制</button>
 <button id="ClearButton" onclick="clearCount()">清空</button>
 <button id="copyGreenButton" onclick="extractAndCopyColoredNumbers('green')">绿</button>
