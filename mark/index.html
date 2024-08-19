@@ -681,9 +681,7 @@ checkbox.checked = localStorage.getItem("showKillNumber") === "true";
 const checkbox_wuxing = document.getElementById("showWuxingCheckbox");
 checkbox_wuxing.checked = localStorage.getItem("showWuxing") === "true";
 var cachedTextInput = localStorage.getItem("highlightNumbers") || "";
-cachedTextInput = cachedTextInput.replace(/\n{2,}/g, '\n');
 editor_main.setValue(cachedTextInput);
-editor_main.refresh();
 if (localStorage.getItem("showKillNumber") === "true") {
 countKillNumbers();
 } else {
