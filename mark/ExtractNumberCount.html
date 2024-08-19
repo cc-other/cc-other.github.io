@@ -242,6 +242,13 @@ background-color: #7f7f7f; /* 按钮背景色 */
 color: #fff; /* 文字颜色 */
 border: none; /* 去除边框 */
 }
+.radio-label.teal {
+    background-color: #008080; /* 青色背景 */
+}
+
+.radio-label.teal:hover {
+    background-color: #004d4d; /* 悬停时更深的青色背景 */
+}
 .radio-label.blue {
     background-color: #4F94CD; /* 黄色背景 */
 }
@@ -321,15 +328,18 @@ transform: translateY(0);
 <textarea id="textInput" placeholder="输入号码..." spellcheck="false"></textarea>
 <div class="button-group">
 <div class="radio-group">
-<span class="span">统计方式: </span>
+<span class="span">统计: </span>
 <label class="radio-label green">
-<input type="radio" name="zodiacOption" value="option1" checked="checked" class="radio-input"> 特围
+<input type="radio" name="zodiacOption" value="option1" checked="checked" class="radio-input"> 围
 </label>
 <label class="radio-label red">
-<input type="radio" name="zodiacOption" value="option2" class="radio-input"> 杀码
+<input type="radio" name="zodiacOption" value="option2" class="radio-input"> 码
 </label>
 <label class="radio-label blue">
-<input type="radio" name="zodiacOption" value="option3" class="radio-input"> 头尾
+<input type="radio" name="zodiacOption" value="option3" class="radio-input"> 头
+</label>
+<label class="radio-label teal">
+<input type="radio" name="zodiacOption" value="option4" class="radio-input"> 尾
 </label>
 </div>
 <button id="ZodiacsButton" onclick="countNumbers()">统计号码</button>
@@ -340,37 +350,283 @@ transform: translateY(0);
 <button id="clearButton" onclick="clearResultBox()"style="display:none">清空</button>
 </div>
 <script>
-function toggleMenuTopRight(){var menuTopRight=document.getElementById("menuTopRight");menuTopRight.style.display=menuTopRight.style.display==="block"?"none":"block";}
-document.addEventListener("click",function(event){var menuTopRight=document.getElementById("menuTopRight");var menuIconTopRight=document.getElementById("menuIconTopRight");if(!menuTopRight.contains(event.target)&&!menuIconTopRight.contains(event.target)){menuTopRight.style.display="none";}});document.getElementById("menuTopRight").addEventListener("click",function(event){event.stopPropagation();});document.getElementById("menuIconTopRight").addEventListener("click",function(event){event.stopPropagation();});function navigateTo(url){window.location.href=url;}
-var editor=CodeMirror.fromTextArea(document.getElementById("textInput"),{lineNumbers:true,lineWrapping:true,styleActiveLine:true,matchBrackets:false,autoCloseBrackets:false,mode:"text/plain",theme:"default",scrollbarStyle:"simple"});editor.setSize('calc(100% - 20px)');editor.on("change",function(cm){editor.setOption("lineNumbers",true);editor.save();var editorContent=editor.getValue();localStorage.setItem("ZodiacNumber",editorContent);});document.addEventListener("DOMContentLoaded",function(){const cachedTextInput=localStorage.getItem("ZodiacNumber");if(cachedTextInput){editor.setValue(cachedTextInput);}});function extractAndFormatNumbers(text,modle){text=text.replace(/o|O/g,'0');const regex=/\b\d{1,2}\b/g;const matches=text.match(regex);if(!matches){return[];}
-const filteredAndFormattedMatches=matches.map(num=>parseInt(num,10)).filter(num=>num>=1&&num<=49).map(num=>num<10?'0'+num:num.toString());return filteredAndFormattedMatches;}
-function checkZodiac(){const input=document.getElementById('inputText').value;const resultTextarea=document.getElementById('result');const copyButton=document.getElementById('copyButton');let extractedNumbers=extractAndFormatNumbers(input);extractedNumbers=extractedNumbers.filter(zodiac=>zodiac!==null);if(extractedNumbers.length>0){resultTextarea.value=`${extractedNumbers.join('-')}`;displayTotalCount(extractedNumbers.length);}else{resultTextarea.value="";clearTotalCount();}}
-function copyToClipboard(){const resultTextarea=document.getElementById('result');resultTextarea.select();resultTextarea.setSelectionRange(0,99999);try{document.execCommand('copy');alert('结果已复制到剪贴板');}catch(err){console.error('复制失败:',err);}}
-function clearInput(){document.getElementById('inputText').value='';document.getElementById('result').value='';clearTotalCount();}
-function clearResultBox(){document.getElementById("resultBox").innerText='';}
-function copyToClipboard(){const resultTextarea=document.getElementById('result');resultTextarea.select();resultTextarea.setSelectionRange(0,99999);try{document.execCommand('copy');alert('已复制');}catch(err){console.error('复制失败:',err);}}
-function copySeasonZodiac(season){const seasonZodiac=seasons[season].join('-');document.getElementById("result").value=seasonZodiac;}
-function extractAndFormatNumbersHeadTail(text){text=text.replace(/o|O/g,'0');const regex=/\b\d{1}\b/g;const matches=text.match(regex);if(!matches){return[];}
-const filteredAndFormattedMatches=matches.map(num=>parseInt(num,10)).filter(num=>num>=0&&num<=9);return filteredAndFormattedMatches.map(num=>num.toString());}
-function countNumbers(){let editorContent=editor.getValue();let lines=editorContent.split('\n').map(line=>line.trim()).filter(line=>line!=='');editor.setValue(lines.join('\n'));let totalLines=0;let lineCount={};const selectedOption=document.querySelector('input[name="zodiacOption"]:checked').value;let countMap={};let numbers;let filteredNumbers;if(selectedOption==='option3'){numbers=Array.from({length:10},(_,i)=>i.toString());filteredNumbers=extractAndFormatNumbersHeadTail(editor.getValue());}else{numbers=Array.from({length:49},(_,i)=>(i+1).toString().padStart(2,'0'));filteredNumbers=extractAndFormatNumbers(editor.getValue());}
-numbers.forEach(number=>{countMap[number]=0;});lines.forEach(line=>{lineCount[line]=(lineCount[line]||0)+1;});totalLines=lines.length;if(filteredNumbers){filteredNumbers.forEach(num=>{if(selectedOption==='option3'&&parseInt(num,10)>=0&&parseInt(num,10)<=9){countMap[num]++;}else if(selectedOption!=='option3'&&countMap.hasOwnProperty(num)){countMap[num]++;}});}
-let totalCount=filteredNumbers?filteredNumbers.length:0;let resultText="";if(selectedOption==='option1'){resultText=`【出次✓准确率】(总: ${totalLines}份/${totalCount}次)\n`;}else if(selectedOption==='option2'){resultText=`【杀次✓准确率】(总: ${totalLines}份/${totalCount}次)\n`;}else if(selectedOption==='option3'){resultText=`【头尾✓准确率】(总: ${totalLines}份/${totalCount}次)\n`;}
-let groupedCounts={};numbers.forEach(function(number){let count=countMap[number]||0;if(count>0){if(!groupedCounts[count]){groupedCounts[count]=[];}
-groupedCounts[count].push(number);}});Object.keys(groupedCounts).sort((a,b)=>b-a).forEach(function(count){let nums=groupedCounts[count];let numGroups=[];while(nums.length>0){numGroups.push(nums.splice(0,10).join(","));}
-let countFormatted=count.toString().padStart(2,'0');numGroups.forEach(function(group){let percentage=calculatePercentage(count,totalLines,selectedOption==='option2'||selectedOption==='option3'?2:1);resultText+=`【${countFormatted}✓${percentage}】${group} (${group.split(',').length}个)\n`;});});if(selectedOption==='option2'||selectedOption==='option3'){let missingNumbers=numbers.filter(number=>countMap[number]===0);if(missingNumbers.length>0){let missingGroups=[];while(missingNumbers.length>0){missingGroups.push(missingNumbers.splice(0,10).join(","));}
-let countFormatted="00";missingGroups.forEach(function(group){let percentage=calculatePercentage(0,totalLines,2);resultText+=`【${countFormatted}✓${percentage}】${group} (${group.split(',').length}个)\n`;});}}
-document.getElementById("resultBox").innerText=resultText;document.getElementById("resultBox").style.display="block";document.getElementById("copyButton2").style.display="inline-block";document.getElementById("clearButton").style.display="inline-block";document.getElementById("copyButton2").scrollIntoView(false);}
-function calculatePercentage(part,total,countstyle){if(countstyle==2){part=total-part;}
-var Percentage=(total===0?0:(part/total)*100).toFixed(0);let PercentageFormatted=Percentage.toString().padStart(2,'0')+'%';return PercentageFormatted;}
-function clearTotalCount(){const totalCountDiv=document.getElementById('totalCount');totalCountDiv.innerText=`计数: 0 号码`;}
-function displayTotalCount(count){const totalCountDiv=document.getElementById('totalCount');totalCountDiv.innerText=`计数: ${count} 号码`;}
-function copyResult(){var resultBox=document.getElementById("resultBox");resultBox.focus();document.execCommand("selectAll");document.execCommand("copy");alert("已复制");}
-function clearCount(){editor.setValue("");localStorage.removeItem('ZodiacNumber');}
-function addResultToInput(){var result=document.getElementById("result").value;if(result==""){return}
-if(editor.getValue()==""){editor.setValue(result);}else{var cursor=editor.getCursor();var lastLine=editor.lastLine();var lastLineContent=editor.getLine(lastLine);if(lastLineContent.trim()!==""){editor.replaceRange("\n"+result,{line:lastLine+1,ch:0});}else{editor.replaceRange(result,{line:lastLine,ch:lastLineContent.length});}}
-var lastLine=editor.lastLine();var lastLinePos=editor.posFromIndex(editor.getValue().length);editor.setCursor(lastLine,lastLinePos.ch);localStorage.setItem("ZodiacNumber",editor.getValue());}
-function showToast(message){const toast=document.createElement('div');toast.className='toast';toast.innerHTML=`<div class="message">${message}<\/div>`;const container=document.getElementById('toastContainer');container.appendChild(toast);setTimeout(()=>{toast.classList.add('show');},10);setTimeout(()=>{toast.classList.remove('show');setTimeout(()=>{toast.remove();},500);},2000);}
-window.alert=function(message){showToast(message);};
+function toggleMenuTopRight() {
+    var menuTopRight = document.getElementById("menuTopRight");
+    menuTopRight.style.display = menuTopRight.style.display === "block" ? "none" : "block";
+}
+document.addEventListener("click", function (event) {
+    var menuTopRight = document.getElementById("menuTopRight");
+    var menuIconTopRight = document.getElementById("menuIconTopRight");
+    if (!menuTopRight.contains(event.target) && !menuIconTopRight.contains(event.target)) {
+        menuTopRight.style.display = "none";
+    }
+});
+document.getElementById("menuTopRight").addEventListener("click", function (event) {
+    event.stopPropagation();
+});
+document.getElementById("menuIconTopRight").addEventListener("click", function (event) {
+    event.stopPropagation();
+});
+function navigateTo(url) {
+    window.location.href = url;
+}
+var editor = CodeMirror.fromTextArea(document.getElementById("textInput"), {
+    lineNumbers: true,
+    lineWrapping: true,
+    styleActiveLine: true,
+    matchBrackets: false,
+    autoCloseBrackets: false,
+    mode: "text/plain",
+    theme: "default",
+    scrollbarStyle: "simple"
+});
+editor.setSize('calc(100% - 20px)');
+editor.on("change", function (cm) {
+    editor.setOption("lineNumbers", true);
+    editor.save();
+    var editorContent = editor.getValue();
+    localStorage.setItem("ZodiacNumber", editorContent);
+});
+document.addEventListener("DOMContentLoaded", function () {
+    const cachedTextInput = localStorage.getItem("ZodiacNumber");
+    if (cachedTextInput) {
+        editor.setValue(cachedTextInput);
+    }
+});
+function extractAndFormatNumbers(text, modle) {
+    text = text.replace(/o|O/g, '0');
+    const regex = /\b\d{1,2}\b/g;
+    const matches = text.match(regex);
+    if (!matches) {
+        return [];
+    }
+    const filteredAndFormattedMatches = matches.map(num => parseInt(num, 10)).filter(num => num >= 1 && num <= 49).map(num => num < 10 ? '0' + num : num.toString());
+    return filteredAndFormattedMatches;
+}
+function checkZodiac() {
+    const input = document.getElementById('inputText').value;
+    const resultTextarea = document.getElementById('result');
+    const copyButton = document.getElementById('copyButton');
+    let extractedNumbers = extractAndFormatNumbers(input);
+    extractedNumbers = extractedNumbers.filter(zodiac => zodiac !== null);
+    if (extractedNumbers.length > 0) {
+        resultTextarea.value = `${extractedNumbers.join('-')}`;
+        displayTotalCount(extractedNumbers.length);
+    } else {
+        resultTextarea.value = "";
+        clearTotalCount();
+    }
+}
+function copyToClipboard() {
+    const resultTextarea = document.getElementById('result');
+    resultTextarea.select();
+    resultTextarea.setSelectionRange(0, 99999);
+    try {
+        document.execCommand('copy');
+        alert('结果已复制到剪贴板');
+    } catch (err) {
+        console.error('复制失败:', err);
+    }
+}
+function clearInput() {
+    document.getElementById('inputText').value = '';
+    document.getElementById('result').value = '';
+    clearTotalCount();
+}
+function clearResultBox() {
+    document.getElementById("resultBox").innerText = '';
+}
+function copyToClipboard() {
+    const resultTextarea = document.getElementById('result');
+    resultTextarea.select();
+    resultTextarea.setSelectionRange(0, 99999);
+    try {
+        document.execCommand('copy');
+        alert('已复制');
+    } catch (err) {
+        console.error('复制失败:', err);
+    }
+}
+function copySeasonZodiac(season) {
+    const seasonZodiac = seasons[season].join('-');
+    document.getElementById("result").value = seasonZodiac;
+}
+function extractAndFormatNumbersHeadTail(text) {
+    text = text.replace(/o|O/g, '0');
+    const regex = /\b\d{1}\b/g;
+    const matches = text.match(regex);
+    if (!matches) {
+        return [];
+    }
+    const filteredAndFormattedMatches = matches.map(num => parseInt(num, 10)).filter(num => num >= 0 && num <= 9);
+    return filteredAndFormattedMatches.map(num => num.toString());
+}
+function countNumbers() {
+    let editorContent = editor.getValue();
+    let lines = editorContent.split('\n').map(line => line.trim()).filter(line => line !== '');
+    editor.setValue(lines.join('\n'));
+    let totalLines = 0;
+    let lineCount = {};
+    const selectedOption = document.querySelector('input[name="zodiacOption"]:checked').value;
+    let countMap = {};
+    let numbers;
+    let filteredNumbers;
+    if (selectedOption === 'option3') {
+        numbers = Array.from({length: 5}, (_, i) => i.toString());
+        filteredNumbers = extractAndFormatNumbersHeadTail(editor.getValue());
+    } else if (selectedOption === 'option4') {
+        numbers = Array.from({length: 10}, (_, i) => i.toString());
+        filteredNumbers = extractAndFormatNumbersHeadTail(editor.getValue());
+    }else {
+        numbers = Array.from({length: 49}, (_, i) => (i + 1).toString().padStart(2, '0'));
+        filteredNumbers = extractAndFormatNumbers(editor.getValue());
+    }
+    numbers.forEach(number => {
+        countMap[number] = 0;
+    });
+    lines.forEach(line => {
+        lineCount[line] = (lineCount[line] || 0) + 1;
+    });
+    totalLines = lines.length;
+    if (filteredNumbers) {
+        filteredNumbers.forEach(num => {
+            if (selectedOption === 'option3' && parseInt(num, 10) >= 0 && parseInt(num, 10) <= 9) {
+                countMap[num]++;
+            }else if (selectedOption === 'option4' && parseInt(num, 10) >= 0 && parseInt(num, 10) <= 4) {
+                countMap[num]++;
+            } else if (selectedOption !== 'option3' && selectedOption !== 'option4'&&countMap.hasOwnProperty(num)) {
+                countMap[num]++;
+            }
+        });
+    }
+    let totalCount = filteredNumbers ? filteredNumbers.length : 0;
+    let resultText = "";
+    if (selectedOption === 'option1') {
+        resultText = `【出次✓准确率】(总: ${totalLines}份/${totalCount}次)\n`;
+    } else if (selectedOption === 'option2') {
+        resultText = `【杀次✓准确率】(总: ${totalLines}份/${totalCount}次)\n`;
+    } else if (selectedOption === 'option3') {
+        resultText = `【杀次✓准确率】(总: ${totalLines}份/${totalCount}次)\n`;
+    }else if (selectedOption === 'option4') {
+        resultText = `【杀次✓准确率】(总: ${totalLines}份/${totalCount}次)\n`;
+    }
+    let groupedCounts = {};
+    numbers.forEach(function (number) {
+        let count = countMap[number] || 0;
+        if (count > 0) {
+            if (!groupedCounts[count]) {
+                groupedCounts[count] = [];
+            }
+            groupedCounts[count].push(number);
+        }
+    });
+    Object.keys(groupedCounts).sort((a, b) => b - a).forEach(function (count) {
+        let nums = groupedCounts[count];
+        let numGroups = [];
+        while (nums.length > 0) {
+            numGroups.push(nums.splice(0, 10).join(","));
+        }
+        let countFormatted = count.toString().padStart(2, '0');
+        numGroups.forEach(function (group) {
+            let percentage = calculatePercentage(count, totalLines, selectedOption === 'option2' || selectedOption === 'option3' || selectedOption === 'option4' ? 2 : 1);
+            resultText += `【${countFormatted}✓${percentage}】${group} (${group.split(',').length}个)\n`;
+        });
+    });
+    if (selectedOption === 'option2' || selectedOption === 'option3'|| selectedOption === 'option4') {
+        let missingNumbers = numbers.filter(number => countMap[number] === 0);
+        if (missingNumbers.length > 0) {
+            let missingGroups = [];
+            while (missingNumbers.length > 0) {
+                missingGroups.push(missingNumbers.splice(0, 10).join(","));
+            }
+            let countFormatted = "00";
+            missingGroups.forEach(function (group) {
+                let percentage = calculatePercentage(0, totalLines, 2);
+                resultText += `【${countFormatted}✓${percentage}】${group} (${group.split(',').length}个)\n`;
+            });
+        }
+    }
+    document.getElementById("resultBox").innerText = resultText;
+    document.getElementById("resultBox").style.display = "block";
+    document.getElementById("copyButton2").style.display = "inline-block";
+    document.getElementById("clearButton").style.display = "inline-block";
+    document.getElementById("copyButton2").scrollIntoView(false);
+}
+function calculatePercentage(part, total, countstyle) {
+    if (countstyle == 2) {
+        part = total - part;
+    }
+    var Percentage = (total === 0 ? 0 : (part / total) * 100).toFixed(0);
+    let PercentageFormatted = Percentage.toString().padStart(2, '0') + '%';
+    return PercentageFormatted;
+}
+function clearTotalCount() {
+    const totalCountDiv = document.getElementById('totalCount');
+    totalCountDiv.innerText = `计数: 0 号码`;
+}
+function displayTotalCount(count) {
+    const totalCountDiv = document.getElementById('totalCount');
+    totalCountDiv.innerText = `计数: ${count} 号码`;
+}
+function copyResult() {
+    var resultBox = document.getElementById("resultBox");
+    resultBox.focus();
+    document.execCommand("selectAll");
+    document.execCommand("copy");
+    alert("已复制");
+}
+function clearCount() {
+    editor.setValue("");
+    localStorage.removeItem('ZodiacNumber');
+}
+function addResultToInput() {
+    var result = document.getElementById("result").value;
+    if (result == "") {
+        return
+    }
+    if (editor.getValue() == "") {
+        editor.setValue(result);
+    } else {
+        var cursor = editor.getCursor();
+        var lastLine = editor.lastLine();
+        var lastLineContent = editor.getLine(lastLine);
+        if (lastLineContent.trim() !== "") {
+            editor.replaceRange("\n" + result, {
+                line: lastLine + 1,
+                ch: 0
+            });
+        } else {
+            editor.replaceRange(result, {
+                line: lastLine,
+                ch: lastLineContent.length
+            });
+        }
+    }
+    var lastLine = editor.lastLine();
+    var lastLinePos = editor.posFromIndex(editor.getValue().length);
+    editor.setCursor(lastLine, lastLinePos.ch);
+    localStorage.setItem("ZodiacNumber", editor.getValue());
+}
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<div class="message">${message}<\/div>`;
+    const container = document.getElementById('toastContainer');
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 500);
+    }, 2000);
+}
+window.alert = function (message) {
+    showToast(message);
+};
+
 </script>
 </body>
 </html>
