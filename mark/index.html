@@ -462,34 +462,36 @@ transform: translateY(0);
     align-items: center;
     margin-bottom: 10px;
   }
-
   .input-group label {
-    min-width: 60px; /* 设置标签的最小宽度以对齐 */
+    min-width: 20px; /* 设置标签的最小宽度 */
     margin-right: 10px;
   }
-
   .input-group input {
-    flex: 1;
     padding: 2px;
+    margin-right: 10px;
   }
-
+  .input-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .input-row input {
+    width: 45%; /* 每个输入框占45%宽度，留出空间 */
+  }
 </style>
 <div id="settingModal" class="modal">
-<div class="modal-content">
-<textarea id="settingkillnumber" placeholder="请输入内容..."></textarea>
-    <!-- 添加最小值和最大值的输入框 -->
-<div class="input-group">
-<label for="minValue">Min： <input type="number" id="minValue" value="85" placeholder="请输入百分比..."></label>
-</div>
-<div class="input-group">
-<label for="maxValue">Max：<input type="number" id="maxValue"  value="98" placeholder="请输入百分比..."></label>    
-</div>
-<div class="button-group">
-<button onclick="saveSettings()">保存</button>
-<button onclick="clearSettings()">清空</button>
-<button onclick="closeModal()">关闭</button>
-</div>
-</div>
+  <div class="modal-content">
+    <textarea id="settingkillnumber" placeholder="请输入内容..."></textarea>
+    <div class="input-row">
+      <label for="minValue">Min：<input type="number" id="minValue" value="85" placeholder="请输入百分比..."></label>
+      <label for="maxValue">Max：<input type="number" id="maxValue" value="98" placeholder="请输入百分比..."></label>
+    </div>
+    <div class="button-group">
+      <button onclick="saveSettings()">保存</button>
+      <button onclick="clearSettings()">清空</button>
+      <button onclick="closeModal()">关闭</button>
+    </div>
+  </div>
 </div>
 <div class="container">
 <textarea id="textInput" placeholder="输入号码..." spellcheck="false"></textarea>
