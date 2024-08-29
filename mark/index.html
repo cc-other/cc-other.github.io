@@ -463,7 +463,7 @@ transform: translateY(0);
     margin-bottom: 10px;
   }
   .input-group label {
-    min-width: 20px; /* 设置标签的最小宽度 */
+    min-width: 20px;
     margin-right: 10px;
   }
   .input-group input {
@@ -476,15 +476,29 @@ transform: translateY(0);
     margin-bottom: 10px;
   }
   .input-row input {
-    width: 45%; /* 每个输入框占45%宽度，留出空间 */
+    width: 45%;
+  }
+  /* 样式设置多行输入框 */
+  .textarea-group textarea {
+    width: 100%;
+    height: 100px; /* 设置高度，调整多行输入 */
+    padding: 5px;
+    resize: vertical; /* 用户可以调整输入框高度 */
+    margin-bottom: 10px;
   }
 </style>
+
 <div id="settingModal" class="modal">
   <div class="modal-content">
+    <label for="settingkillnumber">统计数据：</label>
     <textarea id="settingkillnumber" placeholder="请输入内容..."></textarea>
     <div class="input-row">
-      <label for="minValue">Min：<input type="number" id="minValue" value="85" placeholder="请输入百分比..."></label>
-      <label for="maxValue">Max：<input type="number" id="maxValue" value="98" placeholder="请输入百分比..."></label>
+      <label for="minValue">Min：<input type="number" id="minValue" value="85" placeholder="请输入百分比..."> %</label>
+      <label for="maxValue">Max：<input type="number" id="maxValue" value="98" placeholder="请输入百分比..."> %</label>
+    </div>
+    <div class="textarea-group">
+      <label for="killNumberOther">杀码：</label>
+      <textarea id="killNumberOther" placeholder="请输入杀码..."></textarea>
     </div>
     <div class="button-group">
       <button onclick="saveSettings()">保存</button>
@@ -493,6 +507,7 @@ transform: translateY(0);
     </div>
   </div>
 </div>
+
 <div class="container">
 <textarea id="textInput" placeholder="输入号码..." spellcheck="false"></textarea>
 <div class="button-group">
@@ -543,26 +558,27 @@ return'bg_blue';if(greenWave.includes(number))
 return'bg_green';return'';};const Tbody=document.getElementById('ZodiacTbody');for(const zodiac in zodiacMap){const row=document.createElement('tr');const cellName=document.createElement('td');cellName.textContent=zodiac;row.appendChild(cellName);const cellNumbers=document.createElement('td');zodiacMap[zodiac].forEach(number=>{const spanNumber=document.createElement('span');spanNumber.id="number";spanNumber.className=getColor(number);spanNumber.innerHTML=`<span class=\"highlight-overlay\"></span><span class=\"exclamation\"></span><span class=\"number-wuxing\"></span><span class=\"number-badge\"></span>${number}`;cellNumbers.appendChild(spanNumber);cellNumbers.appendChild(document.createTextNode(' '));});row.appendChild(cellNumbers);Tbody.appendChild(row);}
 var editor_pop=CodeMirror.fromTextArea(document.getElementById("settingkillnumber"),{lineNumbers:true,lineWrapping:true,styleActiveLine:true,matchBrackets:false,autoCloseBrackets:false,mode:"text/plain",theme:"default",scrollbarStyle:"simple"});editor_pop.setOption("lineNumbers",true);editor_pop.refresh();editor_pop.setSize('100%','350px');editor_pop.on("change",function(cm){editor_pop.setOption("lineNumbers",true);editor_pop.save();var editorContent=editor_pop.getValue();localStorage.setItem("killnumber",editorContent);});var editor_main=CodeMirror.fromTextArea(document.getElementById("textInput"),{lineNumbers:true,lineWrapping:true,styleActiveLine:true,matchBrackets:false,autoCloseBrackets:false,mode:"text/plain",theme:"default",scrollbarStyle:"simple"});editor_main.setSize('calc(100% - 20px)','238px');editor_main.on("change",function(cm){editor_main.setOption("lineNumbers",true);editor_main.save();var editorContent=editor_main.getValue();localStorage.setItem("highlightNumbers",editorContent);highlightNumbers();});function showSettingsModal(){document.getElementById("settingModal").style.display="flex";let kill_min=localStorage.getItem("kill_min");let kill_max=localStorage.getItem("kill_max");if(kill_min!=""&&kill_min!=0&&kill_min!=null){document.getElementById('minValue').value=kill_min;}
 if(kill_max!=""&&kill_max!=0&&kill_max!=null){document.getElementById('maxValue').value=kill_max;}
+let KnumOther=getLocalStorage("killNumberOther");if(""!=KnumOther){document.getElementById('killNumberOther').value=KnumOther;}
 let editorContent=localStorage.getItem("killnumber");let lines=editorContent.split('\n').filter(line=>line.trim()!=='');editor_pop.setValue(lines.join('\n'));var menu=document.getElementById("menuTopRight");menu.style.display=menu.style.display==="block"?"none":"block";}
 function closeModal(){document.getElementById("settingModal").style.display="none";}
-function saveSettings(){const minValue=document.getElementById('minValue').value;localStorage.setItem("kill_min",minValue);const maxValue=document.getElementById('maxValue').value;localStorage.setItem("kill_max",maxValue);const content=editor_pop.getValue();localStorage.setItem("killnumber",content);const isKillNumberChecked=document.getElementById('showKillNumberCheckbox').checked;if(isKillNumberChecked){countKillNumbers();}
+function saveSettings(){const minValue=document.getElementById('minValue').value;localStorage.setItem("kill_min",minValue);const maxValue=document.getElementById('maxValue').value;localStorage.setItem("kill_max",maxValue);const knmOther=document.getElementById('killNumberOther').value;localStorage.setItem("killNumberOther",knmOther);const content=editor_pop.getValue();localStorage.setItem("killnumber",content);const isKillNumberChecked=document.getElementById('showKillNumberCheckbox').checked;if(isKillNumberChecked){countKillNumbers();}
 closeModal();}
-function clearSettings(){editor_pop.setValue("");localStorage.removeItem("killnumber");}
+function clearSettings(){editor_pop.setValue("");localStorage.removeItem("killnumber");document.getElementById('killNumberOther').value="";localStorage.removeItem("killNumberOther");}
 function toggleMenuTopRight(){var menuTopRight=document.getElementById("menuTopRight");menuTopRight.style.display=menuTopRight.style.display==="block"?"none":"block";}
 document.addEventListener("click",function(event){var menuTopRight=document.getElementById("menuTopRight");var menuIconTopRight=document.getElementById("menuIconTopRight");if(!menuTopRight.contains(event.target)&&!menuIconTopRight.contains(event.target)){menuTopRight.style.display="none";}});document.getElementById("menuTopRight").addEventListener("click",function(event){event.stopPropagation();});document.getElementById("menuIconTopRight").addEventListener("click",function(event){event.stopPropagation();});function navigateTo(url){window.location.href=url;}
 function toggleFeature(feature){const isKillNumberChecked=document.getElementById('showKillNumberCheckbox').checked;const isWuxingChecked=document.getElementById('showWuxingCheckbox').checked;if(feature==='killNumber'){localStorage.setItem("showKillNumber",isKillNumberChecked);if(isKillNumberChecked){countKillNumbers();}else{hideKillNumbers();}}else if(feature==='wuxing'){localStorage.setItem("showWuxing",isWuxingChecked);if(isWuxingChecked){ShowWuxingNumbers();}else{hideWuxing();}}}
 document.addEventListener("DOMContentLoaded",function(){const checkbox=document.getElementById("showKillNumberCheckbox");checkbox.checked=localStorage.getItem("showKillNumber")==="true";const checkbox_wuxing=document.getElementById("showWuxingCheckbox");checkbox_wuxing.checked=localStorage.getItem("showWuxing")==="true";var cachedTextInput=localStorage.getItem("highlightNumbers")||"";editor_main.setValue(cachedTextInput);if(localStorage.getItem("showKillNumber")==="true"){countKillNumbers();}else{hideKillNumbers();}
 if(localStorage.getItem("showWuxing")==="true"){ShowWuxingNumbers();}else{hideWuxing();}});function formatNumbers(){var inputText=editor_main.getValue();var numberArray=extractAndFormatNumbers(inputText);const groupedLines=[];let line=[];numberArray.forEach((number,index)=>{line.push(number);if(line.length===5||index===numberArray.length-1){groupedLines.push(line.join(','));line=[];}});let output=groupedLines.join('\n');editor_main.setValue(output);localStorage.setItem("highlightNumbers",output);var menu=document.getElementById("menuTopRight");menu.style.display=menu.style.display==="block"?"none":"block";}
-function formatZodiacs(){var inputText=editor_main.getValue();var numberArray=extractAndFormatNumbers(inputText);const zodiacNumbers={};numberArray.forEach(number=>{for(const zodiac in zodiacMap){if(zodiacMap[zodiac].includes(number)){if(!zodiacNumbers[zodiac]){zodiacNumbers[zodiac]=[];}
+function formatZodiacs(){var content=editor_main.getValue();var numberArray=extractAndFormatNumbers(inputText);const zodiacNumbers={};numberArray.forEach(number=>{for(const zodiac in zodiacMap){if(zodiacMap[zodiac].includes(number)){if(!zodiacNumbers[zodiac]){zodiacNumbers[zodiac]=[];}
 zodiacNumbers[zodiac].push(number);break;}}});let output="";for(const zodiac in zodiacNumbers){if(zodiacNumbers[zodiac].length>0){output+=`${zodiac}: ${zodiacNumbers[zodiac].join(',')}\n`;}}
 editor_main.setValue(output);localStorage.setItem("highlightNumbers",output);var menu=document.getElementById("menuTopRight");menu.style.display=menu.style.display==="block"?"none":"block";}
-function formatColor(){var inputText=editor_main.getValue();var numberArray=extractAndFormatNumbers(inputText);const redNumbers=[];const blueNumbers=[];const greenNumbers=[];numberArray.forEach(number=>{if(redWave.includes(number)){redNumbers.push(number);}else if(blueWave.includes(number)){blueNumbers.push(number);}else if(greenWave.includes(number)){greenNumbers.push(number);}});let output="";if(redNumbers.length>0){output+="红: "+redNumbers.join(',')+"\n";}
+function formatColor(){var content=editor_main.getValue();var numberArray=extractAndFormatNumbers(content);const redNumbers=[];const blueNumbers=[];const greenNumbers=[];numberArray.forEach(number=>{if(redWave.includes(number)){redNumbers.push(number);}else if(blueWave.includes(number)){blueNumbers.push(number);}else if(greenWave.includes(number)){greenNumbers.push(number);}});let output="";if(redNumbers.length>0){output+="红: "+redNumbers.join(',')+"\n";}
 if(blueNumbers.length>0){output+="蓝: "+blueNumbers.join(',')+"\n";}
 if(greenNumbers.length>0){output+="绿: "+greenNumbers.join(',');}
 editor_main.setValue(output);localStorage.setItem("highlightNumbers",output);var menu=document.getElementById("menuTopRight");menu.style.display=menu.style.display==="block"?"none":"block";}
-function FilterDuplicates(){var inputText=editor_main.getValue();var numberArray=extractAndFormatNumbers(inputText);var repeatedNumbers=[];numberArray.forEach(function(number){if(!repeatedNumbers.includes(number)){repeatedNumbers.push(number);}});if(repeatedNumbers.length>0){}
+function FilterDuplicates(){var content=editor_main.getValue();var numberArray=extractAndFormatNumbers(content);var repeatedNumbers=[];numberArray.forEach(function(number){if(!repeatedNumbers.includes(number)){repeatedNumbers.push(number);}});if(repeatedNumbers.length>0){}
 const groupedLines=[];let line=[];repeatedNumbers.forEach((number,index)=>{line.push(number);if(line.length===5||index===repeatedNumbers.length-1){groupedLines.push(line.join(','));line=[];}});let output=groupedLines.join('\n');editor_main.setValue(output);localStorage.setItem("highlightNumbers",output);var menu=document.getElementById("menuTopRight");menu.style.display=menu.style.display==="block"?"none":"block";}
-function FormatDuplicates(){var inputText=editor_main.getValue();var numberArray=extractAndFormatNumbers(inputText);var uniqueNumbers=[];var repeatedNumbers=[];var nonRepeatedNumbers=[];numberArray.forEach(function(number){if(!uniqueNumbers.includes(number)){uniqueNumbers.push(number);}else if(!repeatedNumbers.includes(number)){repeatedNumbers.push(number);}});uniqueNumbers.forEach(function(number){if(!repeatedNumbers.includes(number)){nonRepeatedNumbers.push(number);}});function formatNumbers(numbers){const groupedLines=[];let line=[];numbers.forEach((number,index)=>{line.push(number);if(line.length===5||index===numbers.length-1){groupedLines.push(line.join(','));line=[];}});return groupedLines.join('\n');}
+function FormatDuplicates(){var content=editor_main.getValue();var numberArray=extractAndFormatNumbers(content);var uniqueNumbers=[];var repeatedNumbers=[];var nonRepeatedNumbers=[];numberArray.forEach(function(number){if(!uniqueNumbers.includes(number)){uniqueNumbers.push(number);}else if(!repeatedNumbers.includes(number)){repeatedNumbers.push(number);}});uniqueNumbers.forEach(function(number){if(!repeatedNumbers.includes(number)){nonRepeatedNumbers.push(number);}});function formatNumbers(numbers){const groupedLines=[];let line=[];numbers.forEach((number,index)=>{line.push(number);if(line.length===5||index===numbers.length-1){groupedLines.push(line.join(','));line=[];}});return groupedLines.join('\n');}
 if(repeatedNumbers.length>0){let output=""+formatNumbers(uniqueNumbers)+"\n\n[重号]\n"+formatNumbers(repeatedNumbers)+"\n\n[未重号]\n"+formatNumbers(nonRepeatedNumbers);editor_main.setValue(output);}
 var menu=document.getElementById("menuTopRight");menu.style.display=menu.style.display==="block"?"none":"block";}
 function extractAndFormatNumbers(text){text=text.replace(/o|O/g,'0');const regex=/\b\d{1,2}\b/g;const lines=text.split('\n');let result=[];for(let line of lines){const index=line.indexOf('各');if(index!==-1){line=line.substring(0,index);}
@@ -573,12 +589,12 @@ function clearTotalCount(){const totalCountDiv=document.getElementById('totalCou
 function displayTotalCount(count,nCount){const totalCountDiv=document.getElementById('totalCount');var stringCount;if(nCount>0){stringCount=`计数/重复: ${count}/${nCount} 号码`;}else{stringCount=`计数: ${count} 号码`;}
 totalCountDiv.innerText=stringCount;}
 function clearCount(){editor_main.setValue("");localStorage.removeItem('highlightNumbers');highlightNumbers();}
-function getKillNumbersFromCache(){let cachedData=localStorage.getItem('killnumber');return cachedData?cachedData:'';}
-function countKillNumbers(){var inputText=getKillNumbersFromCache();let lines=inputText.split('\n').map(line=>line.trim()).filter(line=>line!=='');let totalLines=lines.length;var numbers=Array.from({length:49},(_,i)=>(i+1).toString().padStart(2,'0'));var countMap={};numbers.forEach(number=>{countMap[number]=0;});var filteredNumbers=inputText.match(/\b\d{2}\b/g);if(filteredNumbers){filteredNumbers.forEach(num=>{if(countMap.hasOwnProperty(num)){countMap[num]++;}});}
-document.querySelectorAll('.number-badge').forEach(el=>{el.style.display='inline';});var allSpans=document.querySelectorAll('.ZodiacTable span');let percentage_min=localStorage.getItem("kill_min");if(!percentage_min){percentage_min=0}
+function getLocalStorage(id){let cachedData=localStorage.getItem(id);return cachedData?cachedData:'';}
+function countKillNumbers(){var content=getLocalStorage("killnumber");let lines=content.split('\n').map(line=>line.trim()).filter(line=>line!=='');let totalLines=lines.length;var numbers=Array.from({length:49},(_,i)=>(i+1).toString().padStart(2,'0'));var countMap={};numbers.forEach(number=>{countMap[number]=0;});var filteredNumbers=extractAndFormatNumbers(content);if(filteredNumbers){filteredNumbers.forEach(num=>{if(countMap.hasOwnProperty(num)){countMap[num]++;}});}
+var ContentOther=getLocalStorage("killNumberOther");var KnumOtherArray=extractAndFormatNumbers(ContentOther);document.querySelectorAll('.number-badge').forEach(el=>{el.style.display='inline';});var allSpans=document.querySelectorAll('.ZodiacTable span');let percentage_min=localStorage.getItem("kill_min");if(!percentage_min){percentage_min=0}
 let percentage_max=localStorage.getItem("kill_max");if(!percentage_max){percentage_max=0}
 allSpans.forEach(function(span){var text=span.textContent.trim();var number_=String(text.match(/\d{2}$/));var number_badge=span.querySelector('.number-badge');if(number_badge===null){return;}
-var killCount=countMap[number_];number_badge.textContent=killCount;let percentage=calculatePercentage(killCount,totalLines,2);if(percentage<=percentage_min&&percentage_min!=0||percentage>=percentage_max&&percentage_max!=0){number_badge.style.color='red';}else{number_badge.style.color='#073fe7';}})}
+var killCount=countMap[number_];number_badge.textContent=killCount;let percentage=calculatePercentage(killCount,totalLines,2);console.log(KnumOtherArray.includes(number_));if((percentage<=percentage_min&&percentage_min!=0)||(percentage>=percentage_max&&percentage_max!=0)||KnumOtherArray.includes(number_)){number_badge.style.color='red';}else{number_badge.style.color='#073fe7';}})}
 function calculatePercentage(part,total,type){if(type==2){part=total-part;}
 var Percentage=(total===0?0:(part/total)*100).toFixed(0);let PercentageFormatted=Percentage.toString().padStart(2,'0');return PercentageFormatted;}
 function getWuxing(number,wuxingMap,wuxingColors){for(let key in wuxingMap){if(wuxingMap[key].includes(number)){return{element:key,color:wuxingColors[key]};}}
@@ -587,7 +603,7 @@ function ShowWuxingNumbers(){document.querySelectorAll('.number-wuxing').forEach
 wuxingInfo=getWuxing(number_,wuxingMap,wuxingColors);if(wuxingInfo){number_wuxing.textContent=wuxingInfo.element;number_wuxing.style.color=wuxingInfo.color;}})}
 function hideKillNumbers(){document.querySelectorAll('.number-badge').forEach(el=>el.style.display='none');}
 function hideWuxing(){document.querySelectorAll('.number-wuxing').forEach(el=>el.style.display='none');}
-function highlightNumbers(){var inputText=editor_main.getValue();var numberArray=extractAndFormatNumbers(inputText);var repeatedNumbers=[];var numberCount={};numberArray.forEach(function(number){if(numberCount[number]){numberCount[number]++;if(!repeatedNumbers.includes(number)){repeatedNumbers.push(number);}}else{numberCount[number]=1;}});if(numberArray.length>0){displayTotalCount(numberArray.length,repeatedNumbers.length);}else{clearTotalCount();}
+function highlightNumbers(){var content=editor_main.getValue();var numberArray=extractAndFormatNumbers(content);var repeatedNumbers=[];var numberCount={};numberArray.forEach(function(number){if(numberCount[number]){numberCount[number]++;if(!repeatedNumbers.includes(number)){repeatedNumbers.push(number);}}else{numberCount[number]=1;}});if(numberArray.length>0){displayTotalCount(numberArray.length,repeatedNumbers.length);}else{clearTotalCount();}
 var allSpans=document.querySelectorAll('.ZodiacTable span');allSpans.forEach(function(span){var text=span.textContent.trim();var number=String(text.match(/\d{2}$/));var exclamation=span.querySelector('.exclamation');if(exclamation===null){return;}
 if(repeatedNumbers.includes(number)){if(exclamation){span.classList.add('exclamation-visible');}}else{if(exclamation){span.classList.remove('exclamation-visible');}}
 var overlayElement=span.querySelector('.highlight-overlay');if(numberArray.includes(number)){if(overlayElement){overlayElement.style.display='none';span.style.fontWeight='bold';overlayElement.style.backgroundColor='transparent';}}else{if(overlayElement){overlayElement.style.display='block';span.style.fontWeight='normal';overlayElement.style.backgroundColor='rgba(245,245,220, 0.8)';}}});updateButtonCount('copyGreenButton','green');updateButtonCount('copyRedButton','red');updateButtonCount('copyBlueButton','blue');}
@@ -597,6 +613,7 @@ function copyTextToClipboard(text){const tempTextArea=document.createElement('te
 function extractAndCopyColoredNumbers(color){const extractedNumbers=extractHighlightedNumbers(color);copyTextToClipboard(extractedNumbers);}
 function showToast(message){const toast=document.createElement('div');toast.className='toast';toast.innerHTML=`<div class="message">${message}<\/div>`;const container=document.getElementById('toastContainer');container.appendChild(toast);setTimeout(()=>{toast.classList.add('show');},10);setTimeout(()=>{toast.classList.remove('show');setTimeout(()=>{toast.remove();},500);},2000);}
 window.alert=function(message){showToast(message);};
+
 </script>
 </body>
 </html>
