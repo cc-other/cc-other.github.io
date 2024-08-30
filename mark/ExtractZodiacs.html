@@ -258,6 +258,58 @@ box-shadow: none; /* 去掉阴影 */
 opacity: 1;
 transform: translateY(0);
 }
+
+
+.radio-group {
+display: flex;
+justify-content: left; /* 水平居中 */
+margin: 0 auto 15px auto; /* 垂直居中 */
+width: calc(100% - 10px); /* 与统计按钮宽度保持一致 */
+margin-top: 5px;
+margin-bottom: 1px;
+}
+.radio-label {
+margin: 0 10px; /* 左右间距 */
+font-size: 16px;
+padding: 5px 10px;
+border-radius: 5px;
+transition: background-color 0.3s;
+cursor: pointer;
+display: flex;
+align-items: center;
+background-color: #7f7f7f; /* 按钮背景色 */
+color: #fff; /* 文字颜色 */
+border: none; /* 去除边框 */
+}
+.radio-label.teal {
+    background-color: #008080; /* 青色背景 */
+}
+
+.radio-label.teal:hover {
+    background-color: #004d4d; /* 悬停时更深的青色背景 */
+}
+.radio-label.blue {
+    background-color: #4F94CD; /* 黄色背景 */
+}
+
+.radio-label.blue:hover {
+    background-color: #2E6DA4; /* 悬停时深黄色背景 */
+}
+.radio-label.red {
+background-color: #dc3545; /* 深红色背景 */
+}
+.radio-label.red:hover {
+background-color: #c82333; /* 悬停时红色背景 */
+}
+.radio-label.green {
+background-color: #28a745; /* 深绿色背景 */
+}
+.radio-label.green:hover {
+background-color: #218838; /* 悬停时绿色背景 */
+}
+.radio-input {
+margin-right: 5px;
+}
 </style>
 </head>
 <body>
@@ -294,6 +346,15 @@ transform: translateY(0);
 </div>
 <textarea id="textInput" placeholder="输入生肖..." spellcheck="false"></textarea>
 <div class="button-group">
+<div class="radio-group">
+<span class="span">统计: </span>
+<label class="radio-label green">
+<input type="radio" name="zodiacOption" value="option1" checked="checked" class="radio-input"> 正肖
+</label>
+<label class="radio-label red">
+<input type="radio" name="zodiacOption" value="option2" class="radio-input"> 杀肖
+</label>
+</div>
 <button id="ZodiacsButton" onclick="countZodiacs()">统计生肖</button>
 <button onclick="clearCount()">清空</button>
 </div>
@@ -453,8 +514,12 @@ function countZodiacs() {
             }
         }
     }
-    // 构建结果文本
-    var resultText = `【杀次✔准确率】：(总: ${totalLines}份/${filteredText.length}次)\n`;
+	const selectedOption = document.querySelector('input[name="zodiacOption"]:checked').value;
+	if (selectedOption === 'option1') {
+        resultText = `【出次✓准确率】(总: ${totalLines}份/${filteredText.length}次)\n`;
+    } else if (selectedOption === 'option2') {
+        resultText = `【杀次✓准确率】(总: ${totalLines}份/${filteredText.length}次)\n`;
+    }
     var groupedCounts = {};
     zodiacs.forEach(function(zodiac) {
         var count = countMap[zodiac] || 0;
@@ -473,7 +538,7 @@ function countZodiacs() {
         }
         var countFormatted = count.toString().padStart(2, '0');
         zodiacGroups.forEach(function(group) {
-            let Percentage = calculatePercentage(count, totalLines,2); // 计算百分比
+            let Percentage = calculatePercentage(count, totalLines,selectedOption === 'option2'? 2 : 1); // 计算百分比
             resultText += `【${countFormatted}✔${Percentage}】：${group}\n`;
         });
     });
